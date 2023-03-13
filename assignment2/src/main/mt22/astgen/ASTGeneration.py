@@ -48,6 +48,7 @@ class ASTGeneration(MT22Visitor):
     def visitAtomic_type(self, ctx:MT22Parser.Atomic_typeContext):
         return IntegerType() if ctx.INTEGER() else FloatType() if ctx.FLOAT() else BooleanType() if ctx.BOOLEAN() else StringType()
     
+    # in process
     def visitArray_type(self, ctx:MT22Parser.Array_typeContext):
         return ArrayType(self.visit(ctx.index()), self.visit(ctx.atomic_type()))
     
@@ -151,3 +152,73 @@ class ASTGeneration(MT22Visitor):
 
     def visitStmt(self, ctx:MT22Parser.StmtContext):
         return self.visitChidlren(ctx)
+    
+    # Assign stmt not finished
+    def visitAssign_stmt(self, ctx:MT22Parser.Assign_stmt):
+        return AssignStmt(self.visit(assign_lhs))
+    
+    def visitAssign_lhs(self, ctx:MT22Parser.Assign_lhsContext):
+        return 
+    
+    def visitScalar_var(self, ctx:MT22Parser.Scalar_varContext):
+        return 
+    
+    def visitIf_stmt(self, ctx:MT22Parser.If_stmtContext):
+        if ctx.ELSE():
+            return IfStmt(self.visit(ctx.exp_bool()), self.visit(ctx.stmt(0)), self.visit(ctx.stmt(1)))
+        return IfStmt(self.visit(ctx.exp_bool()), self.visit(ctx.stmt()))
+    
+    # forstmt not finish
+    def visitFor_stmt(self, ctx:MT22Parser.For_stmtContext):
+        return
+    
+    def visitFor_body(self, ctx:MT22Parser.For_bodyContext):
+        return
+    
+    def visitWhile_stmt(self, ctx:MT22Parser.While_stmtContext):
+        return WhileStmt(self.visit(ctx.exp_bool()), self.visit(ctx.while_body()))
+    
+    def visitWhile_body(self, ctx:MT22Parser.While_bodyContext):
+        return self.visitChildren(ctx)
+    
+    def visitDowhile_stmt(self, ctx:MT22Parser.Dowhile_stmtContext):
+        return DoWhileStmt(self.visit(ctx.exp_bool()), self.visit(ctx.while_body()))
+    
+    def visitBreak_stmt(self, ctx:MT22Parser.Break_stmtContext):
+        return BreakStmt()
+    
+    def visitContinue_stmt(self, ctx:MT22Parser.Continue_stmtContext):
+        return ContinueStmt()
+    
+    def visitReturn_stmt(self, ctx:MT22Parser.Return_stmtContext):
+        return ReturnStmt() if ctx.getChildCount() == 3 else ReturnStmt(self.visit(ctx.exp())) if ctx.exp() else ReturnStmt(self.visit(ctx.fun_call()))
+                                                                                                                           
+    def visitCall_stmt(self, ctx:MT22Parser.Call_stmtContext):
+        return CallStmt(Id(ctx.ID().getText()), self.visit(ctx.call_body()))
+    
+    def visitCall_body(self, ctx:MT22Parser.Call_bodyContext):
+        if ctx.getChildCount() == 0:
+            return []
+        return [self.visit(ctx.exp())] + self.visit(ctx.call_body2())
+    
+    def visitCall_body2(self, ctx:MT22Parser.Call_body2Context):
+        if ctx.getChildCount() == 0:
+            return []
+        return [self.visit(ctx.exp())] + self.visit(ctx.call_body2())
+    
+    def visitBlock_stmt(self, ctx:MT22Parser.Block_stmtContext):
+        return BlockStmt(self.visit(ctx.block_body()))
+    
+    def visitBlock_body(self, ctx:MT22Parser.Block_bodyContext):
+        if ctx.getChildCount() == 0: return []
+        return [self.visit(ctx.block_element())] + self.visit(ctx.block_body2())
+    
+    def visitBlock_body2(self, ctx:MT22Parser.Block_bodyContext):
+        if ctx.getChildCount() == 0: return []
+        return [self.visit(ctx.block_element())] + self.visit(ctx.block_body2())
+    
+    def visitBlock_element(self, ctx:MT22Parser.Block_elementContext):
+        return self.visitChildren(ctx)
+    
+    def visitIndex(self, ctx:MT22Parser.IndexContext):
+        return 

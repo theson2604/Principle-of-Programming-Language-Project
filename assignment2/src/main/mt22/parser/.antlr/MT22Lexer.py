@@ -1,4 +1,4 @@
-# Generated from e:\HCMUT\222\Principles of Programing Languages\ppl_assignments\assignment2\src\main\mt22\parser\MT22.g4 by ANTLR 4.9.2
+# Generated from e:\slides\222\principle\assignments\assignment2\src\main\mt22\parser\MT22.g4 by ANTLR 4.9.2
 from antlr4 import *
 from io import StringIO
 import sys

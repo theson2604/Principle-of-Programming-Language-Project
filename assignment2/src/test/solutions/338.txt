@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(foo, VoidType, [], None, BlockStmt([[<AST.VarDecl object at 0x000001DE73BECF70>], ForStmt(AssignStmt((<AST.Id object at 0x000001DE73BEC910>, [<AST.IntegerLit object at 0x000001DE73BEC070>]), IntegerLit(1)), BinExpr(<=, ArrayCell(Id(i), [IntegerLit(2)]), IntegerLit(10)), BinExpr(+, ArrayCell(Id(i), [IntegerLit(2)]), IntegerLit(1)), ForStmt(AssignStmt(Id(j), Id(i)), BinExpr(>=, Id(j), IntegerLit(1)), BinExpr(-, Id(j), IntegerLit(1)), IfStmt(BinExpr(==, BinExpr(%, BinExpr(+, Id(i), Id(j)), IntegerLit(2)), IntegerLit(1)), BreakStmt())))]))
+])

@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(main, VoidType, [], None, BlockStmt([AssignStmt(Id(a), ArrayCell(Id(b), [IntegerLit(4)])), AssignStmt((<AST.Id object at 0x000001DE730204F0>, [<AST.IntegerLit object at 0x000001DE73020BB0>]), ArrayCell(Id(foo), [IntegerLit(5)])), AssignStmt((<AST.Id object at 0x000001DE73BFDF10>, [<AST.IntegerLit object at 0x000001DE73BFD400>]), Id(p))]))
+])

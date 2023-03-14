@@ -1,0 +1,13 @@
+Program([
+	FuncDecl(main, VoidType, [Param(a, IntegerType), Param(b, ArrayType([0, 15], BooleanType)), Param(x, FloatType)], None, BlockStmt([AssignStmt(Id(a), IntegerLit(3))]))
+	FuncDecl(foo, VoidType, [], None, BlockStmt([IfStmt(BinExpr(==, Id(a), IntegerLit(1)), BlockStmt([IfStmt(BinExpr(>, Id(b), IntegerLit(3)), AssignStmt(Id(c), IntegerLit(5))), IfStmt(BinExpr(<, Id(e), IntegerLit(4)), CallStmt(ok, ), AssignStmt(Id(d), IntegerLit(1)))]), BlockStmt([IfStmt(BinExpr(>, FuncCall(Id(h), []), IntegerLit(5)), CallStmt(nty, ), CallStmt(lyo, )), AssignStmt(Id(g), IntegerLit(5))]))]))
+	VarDecl(a, IntegerType)
+	VarDecl(b, StringType)
+	VarDecl(f, FloatType)
+	VarDecl(g, FloatType)
+	VarDecl(t, StringType)
+	VarDecl(h, StringType)
+	VarDecl(p, BooleanType)
+	VarDecl(q, BooleanType)
+	FuncDecl(foo2, VoidType, [], None, BlockStmt([IfStmt(BooleanLit(True), BlockStmt([CallStmt(hic, ), BreakStmt(), ContinueStmt()]), ReturnStmt(FuncCall(Id(oh), [])))]))
+])

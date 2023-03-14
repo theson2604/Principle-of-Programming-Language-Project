@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(foo, VoidType, [], None, BlockStmt([AssignStmt((<AST.Id object at 0x000001DE73CE8940>, [<AST.BinExpr object at 0x000001DE73D8E220>]), BinExpr(==, BinExpr(+, ArrayCell(Id(a), [UnExpr(-, IntegerLit(5))]), ArrayCell(Id(a), [UnExpr(-, IntegerLit(5)), ArrayCell(Id(a), [IntegerLit(0)])])), IntegerLit(0)))]))
+])

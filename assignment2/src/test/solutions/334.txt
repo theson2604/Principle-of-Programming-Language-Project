@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType)], None, BlockStmt([WhileStmt(BinExpr(<, Id(i), IntegerLit(1)), BlockStmt([AssignStmt(Id(i), BinExpr(+, Id(i), IntegerLit(1))), IfStmt(BinExpr(>=, Id(i), IntegerLit(1)), AssignStmt(Id(i), BinExpr(-, Id(i), IntegerLit(1))))]))]))
+])

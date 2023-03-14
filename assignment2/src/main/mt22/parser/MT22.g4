@@ -23,7 +23,7 @@ id_list2: COMMA ID id_list2 |;
 
 // var_type: INTEGER|FLOAT|STRING|BOOLEAN|array_type|AUTO;
 atomic_type: INTEGER|FLOAT|STRING|BOOLEAN;
-array_type: ARRAY index OF atomic_type;
+array_type: ARRAY index_int OF atomic_type;
 
 //function declaration
 func_declare: func_proto (INHERIT ID)? func_body;
@@ -61,9 +61,12 @@ stmt: assign_stmt | if_stmt | for_stmt | while_stmt | dowhile_stmt | break_stmt 
 // stmt_list: stmt stmt_list2 |;
 // stmt_list2: stmt;
 
-assign_stmt: assign_lhs+ exp SEMI;
+// assign_stmt: assign_lhs+ exp SEMI;
+assign_stmt: lhs_list exp SEMI;
 assign_lhs: scalar_var ASSIGN;
 scalar_var: ID index?;
+lhs_list: assign_lhs lhs_list2 | assign_lhs;
+lhs_list2: assign_lhs lhs_list2 |;
 
 if_stmt: IF LP exp_bool RP stmt (ELSE stmt)?;
 
@@ -132,9 +135,13 @@ BOOLEAN: 'boolean';
 VOID: 'void';
 ARRAY: 'array';
 
+index_int: LSB list_int RSB;
+list_int: INT_LIT list_int2 | INT_LIT;
+list_int2: COMMA INT_LIT list_int2 |; 
+
 index: LSB list_exp_int RSB;
 list_exp_int: exp_int list_exp_int2 | exp_int;
-list_exp_int2: COMMA exp_int list_exp_int2 |;
+list_exp_int2: COMMA exp_int list_exp_int2 |; 
 
 INHERIT: 'inherit';
 FUNCTION: 'function';

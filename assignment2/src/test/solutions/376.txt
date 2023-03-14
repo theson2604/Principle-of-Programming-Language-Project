@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(main, VoidType, [], None, BlockStmt([AssignStmt(Id(a), ArrayCell(Id(b), [IntegerLit(1), IntegerLit(2), FuncCall(Id(get), [IntegerLit(3)]), IntegerLit(4)])), AssignStmt((<AST.Id object at 0x000001DE73D0BFA0>, [<AST.Id object at 0x000001DE73D0BBE0>, <AST.IntegerLit object at 0x000001DE73D0BD30>, <AST.FuncCall object at 0x000001DE73D0BD00>]), BooleanLit(True))]))
+])

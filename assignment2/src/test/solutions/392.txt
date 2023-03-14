@@ -1,0 +1,11 @@
+Program([
+	FuncDecl(main, VoidType, [Param(a, IntegerType), Param(b, ArrayType([0, 15], BooleanType)), Param(x, FloatType)], None, BlockStmt([AssignStmt(Id(a), IntegerLit(3))]))
+	FuncDecl(foo, VoidType, [], None, BlockStmt([IfStmt(BinExpr(==, Id(a), IntegerLit(1)), BlockStmt([IfStmt(BinExpr(>, Id(b), IntegerLit(3)), AssignStmt(Id(c), IntegerLit(5))), IfStmt(BinExpr(<, Id(e), IntegerLit(4)), CallStmt(ok, ), AssignStmt(Id(d), IntegerLit(1)))]), BlockStmt([IfStmt(BinExpr(>, FuncCall(Id(h), []), IntegerLit(5)), CallStmt(nty, ), CallStmt(lyo, )), AssignStmt(Id(g), IntegerLit(5))]))]))
+	VarDecl(g, IntegerType)
+	VarDecl(h, IntegerType)
+	VarDecl(y, IntegerType)
+	FuncDecl(nty, IntegerType, [OutParam(x, IntegerType), InheritParam(y, IntegerType), InheritOutParam(z, IntegerType)], None, BlockStmt([CallStmt(readLine, ), AssignStmt(Id(fs), FuncCall(Id(readStdin), [])), ForStmt(AssignStmt(Id(i), IntegerLit(4)), BinExpr(>=, Id(i), UnExpr(-, IntegerLit(5))), BinExpr(-, Id(i), IntegerLit(1)), AssignStmt(Id(h), IntegerLit(6))), IfStmt(BinExpr(>, Id(i), IntegerLit(6)), ReturnStmt(IntegerLit(0))), ReturnStmt(IntegerLit(1))]))
+	VarDecl(q, IntegerType)
+	VarDecl(w, IntegerType)
+	FuncDecl(main, IntegerType, [], nty, BlockStmt([]))
+])

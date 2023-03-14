@@ -184,6 +184,16 @@ class MT22Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by MT22Parser#lhs_list.
+    def visitLhs_list(self, ctx:MT22Parser.Lhs_listContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by MT22Parser#lhs_list2.
+    def visitLhs_list2(self, ctx:MT22Parser.Lhs_list2Context):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by MT22Parser#if_stmt.
     def visitIf_stmt(self, ctx:MT22Parser.If_stmtContext):
         return self.visitChildren(ctx)
@@ -261,6 +271,21 @@ class MT22Visitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by MT22Parser#block_element.
     def visitBlock_element(self, ctx:MT22Parser.Block_elementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by MT22Parser#index_int.
+    def visitIndex_int(self, ctx:MT22Parser.Index_intContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by MT22Parser#list_int.
+    def visitList_int(self, ctx:MT22Parser.List_intContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by MT22Parser#list_int2.
+    def visitList_int2(self, ctx:MT22Parser.List_int2Context):
         return self.visitChildren(ctx)
 
 

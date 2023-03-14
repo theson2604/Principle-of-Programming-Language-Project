@@ -1,0 +1,7 @@
+
+main: function integer ()
+{
+    // Line Comment
+    /* Block Comment */
+    return 2;
+}

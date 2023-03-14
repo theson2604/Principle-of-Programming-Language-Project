@@ -1,0 +1,10 @@
+
+            foo: function void()
+            {
+                while (1 < 2) { 
+                    while (true)
+                        something();
+                        /*This is a comment*/
+                }
+            }
+            

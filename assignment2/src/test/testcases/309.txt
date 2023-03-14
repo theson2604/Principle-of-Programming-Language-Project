@@ -1,0 +1,7 @@
+
+foo: function void (x: integer, z: float, g:boolean, h: string) {
+    a, b, c: float;
+    p: boolean;
+    q: string;
+    i, j: integer;
+}

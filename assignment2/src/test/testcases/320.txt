@@ -1,0 +1,7 @@
+
+main: function array [3,2] of boolean (
+a : integer,
+b : float) {
+    a = 3;    
+    a = ! - F * G / 5 + (I - !L && N + Y || Q *  !-P) && 6 * 5 + O / !(5 % T) ;
+}

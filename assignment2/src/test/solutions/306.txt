@@ -1,0 +1,9 @@
+Program([
+	VarDecl(a, IntegerType)
+	VarDecl(B, IntegerType)
+	VarDecl(c, IntegerType)
+	VarDecl(x, BooleanType)
+	VarDecl(Y, BooleanType)
+	VarDecl(Z, BooleanType)
+	VarDecl(g, ArrayType([IntegerLit(2), IntegerLit(3)], FloatType), [[<AST.IntegerLit object at 0x0000024005644F40>, <AST.IntegerLit object at 0x0000024005644520>, <AST.IntegerLit object at 0x0000024005644280>], [<AST.IntegerLit object at 0x0000024005644EE0>, <AST.IntegerLit object at 0x0000024005644070>, <AST.IntegerLit object at 0x0000024005644160>]])
+])

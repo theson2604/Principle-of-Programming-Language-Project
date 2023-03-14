@@ -1,0 +1,4 @@
+
+main: function void() {   
+    a[5] = "ahihi! hic hic";
+}

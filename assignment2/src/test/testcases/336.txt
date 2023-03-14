@@ -1,0 +1,10 @@
+
+main: function array [3,2] of boolean (
+a : integer,
+b : float) { 
+    foo();
+    bar(1);
+    nty(1, 2, 3);
+    pty(hyy, dyf(), ily(123, 456, fay), jtq(gyh())) ;  
+}
+

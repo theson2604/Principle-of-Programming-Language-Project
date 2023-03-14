@@ -1,0 +1,8 @@
+
+            foo: function void()
+            {
+                for (x = - 1,  x != b[2], x * 3) {
+                    PrintLn("Hello");
+                }
+            }
+            

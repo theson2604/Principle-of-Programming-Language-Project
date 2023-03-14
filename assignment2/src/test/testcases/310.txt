@@ -1,0 +1,14 @@
+
+foo: function auto (
+    x: integer,
+    y: boolean, z: float,
+    g: string, h: string,
+    arr: array[2, 3] of float
+)
+{ 
+    a, b, c: float;
+    p: boolean;
+    q: string;
+    i, j: integer;
+    ab, kc, dd: array[1,2] of integer = {{2,1}}, {{4,4}}, {{2,3}};
+}

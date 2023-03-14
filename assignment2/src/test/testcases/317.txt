@@ -1,0 +1,8 @@
+
+main: function array [3,2] of boolean (
+a : integer,
+b : float) {
+    a = 3;    
+    a = b + 2 + n || 4 + 5 - g && 2 - 9;
+}
+

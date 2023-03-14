@@ -1,0 +1,10 @@
+
+main: function array [3,2] of boolean (
+a : integer,
+b : float) { 
+    if (a != 1)
+        if (b > 3)
+            c = 5;
+    else
+        e = 0;
+}

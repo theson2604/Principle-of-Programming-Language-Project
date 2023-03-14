@@ -1,0 +1,8 @@
+
+            foo: function integer(a:float)
+            {
+                while(1 < 2) while (.e2) {
+                    while (true) nothing();
+                }
+            }
+            

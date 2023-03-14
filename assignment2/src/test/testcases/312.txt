@@ -1,0 +1,7 @@
+
+main: function array [3,2] of boolean (
+a : integer,
+b : float) {
+    c : integer = 3;
+    a = 5;    
+}

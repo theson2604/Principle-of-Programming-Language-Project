@@ -1,0 +1,6 @@
+
+main: function void() {
+    a = b[4] ;
+    b[4] = foo[5] ;
+    foo[5] = p;
+}

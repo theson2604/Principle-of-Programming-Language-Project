@@ -1,0 +1,4 @@
+
+// Line Comment { Block Comment }
+// Line Comment /* Block Comment */
+    a /* Block */ : integer = /*Block */ 5;

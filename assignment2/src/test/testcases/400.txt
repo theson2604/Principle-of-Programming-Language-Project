@@ -1,0 +1,9 @@
+
+abc: function integer (x: float, y:float)
+{
+        if (x == y)
+            a= 1000;
+        else
+            b= 999;
+    
+}

@@ -1,0 +1,6 @@
+
+foo: function void (x: integer){
+    a, b, c: float = 3.2,4.1,6.;
+    a = b + c;
+    return;
+}

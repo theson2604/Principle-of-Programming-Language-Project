@@ -1,0 +1,4 @@
+
+a: integer;
+b: float;
+c, b, m: string="hello", "hi", "32,12";

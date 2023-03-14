@@ -1,0 +1,9 @@
+
+            foo: function void()
+            {
+                for (x = a[0], x<a[2], x+1)
+                {
+                    PrintLn("Hello");
+                }
+            }
+            

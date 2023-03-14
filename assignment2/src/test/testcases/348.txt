@@ -1,0 +1,11 @@
+
+            foo: function void()
+            {
+                for (x = -2,  x < b[2], x -3)
+                    for (y = -.3e-5, y < x, y*1.5)
+                    {
+                        a();
+                        b();
+                    }
+            }
+            

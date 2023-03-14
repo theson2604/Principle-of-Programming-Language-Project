@@ -1,0 +1,13 @@
+
+main: function void(
+    x: integer,
+    y: float,
+    g: string,
+    arr_nodes: array[0 , 1000] of float
+){  
+    a, b, c: float;
+    p: boolean;
+    q: string;
+    i, j: integer;
+    dd: array[0 , 1000005] of boolean;
+}

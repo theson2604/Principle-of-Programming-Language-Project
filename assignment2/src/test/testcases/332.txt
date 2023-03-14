@@ -1,0 +1,14 @@
+
+main: function array [3,2] of boolean (
+a : integer,
+b : float) { 
+    if (a == 1) {
+        if (b > 3)  c = 5;
+        else d = 1;
+        if (e < 4) ok();
+    }
+    else {
+        if (h > 5) nty(); else lyo();
+        g = 5;
+    }
+}

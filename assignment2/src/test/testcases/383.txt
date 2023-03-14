@@ -1,0 +1,4 @@
+
+main: function void() {
+    foo[3+x] = a[b[f+y[2]-h[t[5+j]] * 4]] + 3;   
+}

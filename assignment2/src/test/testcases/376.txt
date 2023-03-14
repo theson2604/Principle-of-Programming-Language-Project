@@ -1,0 +1,5 @@
+
+main: function void() {
+    a = b[1,2,get(3),4] ;
+    foo[b,3,bar()] = true;   
+}

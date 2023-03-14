@@ -1,0 +1,39 @@
+
+main: function void(
+        a: integer,
+        b: array [0 , 15] of boolean,
+        x: float)
+    {
+        a = 3;
+    }
+          
+foo: function void() {
+    if (a == 1){
+        if (b > 3) c = 5;
+        if (e < 4) ok();
+        else d = 1;
+    } else {
+        if (h()> 5) nty(); else lyo();
+        g = 5;
+    }
+}
+
+g, h, y: integer;
+
+nty: function integer(out x: integer, inherit y:integer, inherit out z:integer) {
+    readLine();
+    // This is readLine()
+    fs = readStdin();
+        for (i = 4, i >= -5, i-1) h = 6;
+    if (i > 6) return 0;
+    return 1;
+}
+q, w : integer;
+main: function integer() inherit nty {
+    /*
+        =======================================
+        Comment here
+        =======================================
+    */
+    
+}

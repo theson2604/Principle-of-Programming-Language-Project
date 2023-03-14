@@ -1,0 +1,8 @@
+
+main: function array [3,2] of boolean (
+a : array [3] of integer,
+b : array [3] of float) {
+    c: array [3] of boolean = {true, false, true};
+    c[3+a] = a[b[f+y[2]-h[t[5+j]] * 4]] + 3;
+}
+

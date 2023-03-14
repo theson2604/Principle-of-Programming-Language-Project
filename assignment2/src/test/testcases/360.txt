@@ -1,0 +1,4 @@
+
+main: function void() {  
+    a = -1.2+4.6*6%7+m-f*k>4+2*5-6/abc- - -4 || 3 && true;
+}

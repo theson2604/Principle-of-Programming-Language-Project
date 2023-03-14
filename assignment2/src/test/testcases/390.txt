@@ -1,0 +1,22 @@
+
+a, b, c: float;
+x, y, z: boolean;
+g, h, y: integer;
+
+nty: function integer(out x: integer, inherit y:integer, inherit out z:integer) {
+    readLine();
+    // This is readLine()
+    fs = readStdin();
+        for (i = 4, i >= -5, i-1) h = 6;
+    if (i > 6) return 0;
+    return 1;
+}
+q, w : integer;
+main: function integer() inherit nty {
+    /*
+        =======================================
+        Comment here
+        =======================================
+    */
+    
+}

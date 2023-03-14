@@ -1,0 +1,6 @@
+
+main: function array [3,2] of boolean (
+a : integer,
+b : float) { 
+    while (i < 1) i = i+1;
+}

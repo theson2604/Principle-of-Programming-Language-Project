@@ -1,0 +1,7 @@
+
+main: function array [3,2] of boolean (
+a : integer,
+b : array [3,2] of boolean) {
+    a = b[foo(2,4),b[1,get((a+foo(2)),a)]];
+    return b;
+}

@@ -1,0 +1,4 @@
+
+main: function void() {
+    for (i = a+2*c, i < h(f+r*2), i*2) hic();    
+}

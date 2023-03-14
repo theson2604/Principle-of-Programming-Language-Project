@@ -1,0 +1,4 @@
+
+main: function void() {   
+    a[1+2] = foo(bar(), .3e2, 3.4, -6.5);
+}

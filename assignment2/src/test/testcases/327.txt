@@ -1,0 +1,9 @@
+
+main: function array [3,2] of boolean (
+a : integer,
+b : float) {
+    if ((a == 1 || b) != 2 && !c)
+        ok();
+    a = 3;    
+}
+

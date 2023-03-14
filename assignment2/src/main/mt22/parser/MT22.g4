@@ -58,8 +58,8 @@ func_call: ID LP call_body RP;
 
 //7.
 stmt: assign_stmt | if_stmt | for_stmt | while_stmt | dowhile_stmt | break_stmt | continue_stmt | return_stmt | call_stmt | block_stmt;
-stmt_list: stmt stmt_list2 |;
-stmt_list2: stmt;
+// stmt_list: stmt stmt_list2 |;
+// stmt_list2: stmt;
 
 assign_stmt: assign_lhs+ exp SEMI;
 assign_lhs: scalar_var ASSIGN;

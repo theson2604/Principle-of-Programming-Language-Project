@@ -1,0 +1,11 @@
+
+main: function void() {
+    while (false ) {
+        ok();
+        a = 4;
+        return;
+        break;
+        continue;
+        return hoho;
+    }
+}

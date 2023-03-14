@@ -1,0 +1,5 @@
+
+main: function void() {
+    a = a+5*f - !( -true || (a < b*"String"+"false"*false) || fgh % TYR ------ 666666 *
+    ("abc" <= "xyz") ) / false % QUE + ---- false * "{{}}1e5" + 2e5;
+}

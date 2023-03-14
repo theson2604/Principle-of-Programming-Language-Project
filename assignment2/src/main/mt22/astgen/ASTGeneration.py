@@ -73,7 +73,6 @@ class ASTGeneration(MT22Visitor):
         return self.visit(ctx.block_stmt())
     
     def visitParam_declare(self, ctx:MT22Parser.Param_declareContext):
-        out, inherit
         if ctx.OUT(): out = True
         else: out = False
         if ctx.INHERIT(): inherit = True
@@ -86,7 +85,7 @@ class ASTGeneration(MT22Visitor):
     def visitParams(self, ctx:MT22Parser.ParamsContext):
         if ctx.getChildCount() == 0:
             return []
-        return [self.visit(ctx.param_declare())] + self.visit(ctx.params2)
+        return [self.visit(ctx.param_declare())] + self.visit(ctx.params2())
 
     def visitParams2(self, ctx:MT22Parser.Params2Context):
         if ctx.getChildCount() == 0:
@@ -203,7 +202,7 @@ class ASTGeneration(MT22Visitor):
         return ContinueStmt()
     
     def visitReturn_stmt(self, ctx:MT22Parser.Return_stmtContext):
-        return ReturnStmt() if ctx.getChildCount() == 3 else ReturnStmt(self.visit(ctx.exp())) if ctx.exp() else ReturnStmt(self.visit(ctx.fun_call()))
+        return ReturnStmt() if ctx.getChildCount() != 3 else ReturnStmt(self.visit(ctx.exp())) if ctx.exp() else ReturnStmt(self.visit(ctx.fun_call()))
                                                                                                                            
     def visitCall_stmt(self, ctx:MT22Parser.Call_stmtContext):
         return CallStmt(ctx.ID().getText(), self.visit(ctx.call_body()))

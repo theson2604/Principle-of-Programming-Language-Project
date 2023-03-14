@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(main, ArrayType([IntegerLit(3), IntegerLit(2)], BooleanType), [Param(Id(a), ArrayType([IntegerLit(3)], IntegerType)), Param(Id(b), ArrayType([IntegerLit(3)], FloatType))], None, BlockStmt([[<AST.VarDecl object at 0x000002BA6A48D0D0>], None]))
+])

@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(foo, VoidType, [Param(Id(x), IntegerType), Param(Id(z), FloatType), Param(Id(g), BooleanType), Param(Id(h), StringType)], None, BlockStmt([[<AST.VarDecl object at 0x000002BA6A6BA7C0>, <AST.VarDecl object at 0x000002BA6A6BA460>, <AST.VarDecl object at 0x000002BA6A6BAA30>], [<AST.VarDecl object at 0x000002BA6A6BAAF0>], [<AST.VarDecl object at 0x000002BA6A6256A0>], [<AST.VarDecl object at 0x000002BA6A625640>, <AST.VarDecl object at 0x000002BA6A6251C0>]]))
+])

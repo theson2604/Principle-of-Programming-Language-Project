@@ -1,3 +1,3 @@
 Program([
-	FuncDecl(foo, IntegerType, [], None, BlockStmt([[<AST.VarDecl object at 0x00000240056E2550>], ReturnStmt()]))
+	FuncDecl(foo, IntegerType, [], None, BlockStmt([[<AST.VarDecl object at 0x000002BA6A61CF40>], ReturnStmt(IntegerLit(2))]))
 ])

@@ -149,11 +149,6 @@ class MT22Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by MT22Parser#exp7.
-    def visitExp7(self, ctx:MT22Parser.Exp7Context):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by MT22Parser#operands.
     def visitOperands(self, ctx:MT22Parser.OperandsContext):
         return self.visitChildren(ctx)

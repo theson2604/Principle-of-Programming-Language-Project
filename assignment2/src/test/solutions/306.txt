@@ -5,5 +5,5 @@ Program([
 	VarDecl(x, BooleanType)
 	VarDecl(Y, BooleanType)
 	VarDecl(Z, BooleanType)
-	VarDecl(g, ArrayType([2, 3], FloatType), [[<AST.IntegerLit object at 0x000001DE73C6E850>, <AST.IntegerLit object at 0x000001DE73C6EB50>, <AST.IntegerLit object at 0x000001DE73C6E940>], [<AST.IntegerLit object at 0x000001DE73C6EA00>, <AST.IntegerLit object at 0x000001DE73C6E820>, <AST.IntegerLit object at 0x000001DE73C6E4F0>]])
+	VarDecl(g, ArrayType([2, 3], FloatType), ArrayLit([ArrayLit([IntegerLit(2), IntegerLit(1), IntegerLit(6)]), ArrayLit([IntegerLit(4), IntegerLit(2), IntegerLit(1)])]))
 ])

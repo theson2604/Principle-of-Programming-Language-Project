@@ -1,3 +1,3 @@
 Program([
-	FuncDecl(main, VoidType, [], None, BlockStmt([AssignStmt((<AST.Id object at 0x000001DE73BB2BE0>, [<AST.BinExpr object at 0x000001DE73BDC1F0>]), FuncCall(Id(foo), [FuncCall(Id(bar), []), StringLit(hi), FloatLit(3.4), UnExpr(-, FloatLit(6.5))]))]))
+	FuncDecl(main, VoidType, [], None, BlockStmt([AssignStmt(ArrayCell(a, [BinExpr(+, IntegerLit(1), IntegerLit(2))]), FuncCall(foo, [FuncCall(bar, []), StringLit(hi), FloatLit(3.4), UnExpr(-, FloatLit(6.5))]))]))
 ])

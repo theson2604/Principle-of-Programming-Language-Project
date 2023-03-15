@@ -1,3 +1,3 @@
 Program([
-	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType), Param(c, IntegerType)], None, BlockStmt([AssignStmt(Id(a), FuncCall(Id(foo), [IntegerLit(3)]))]))
+	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType), Param(c, IntegerType)], None, BlockStmt([AssignStmt(Id(a), FuncCall(foo, [IntegerLit(3)]))]))
 ])

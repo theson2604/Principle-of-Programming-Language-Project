@@ -1,3 +1,3 @@
 Program([
-	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType)], None, BlockStmt([CallStmt(foo, ), CallStmt(bar, IntegerLit(1)), CallStmt(nty, IntegerLit(1), IntegerLit(2), IntegerLit(3)), CallStmt(pty, Id(hyy), FuncCall(Id(dyf), []), FuncCall(Id(ily), [IntegerLit(123), IntegerLit(456), Id(fay)]), FuncCall(Id(jtq), [FuncCall(Id(gyh), [])]))]))
+	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType)], None, BlockStmt([CallStmt(foo, ), CallStmt(bar, IntegerLit(1)), CallStmt(nty, IntegerLit(1), IntegerLit(2), IntegerLit(3)), CallStmt(pty, Id(hyy), FuncCall(dyf, []), FuncCall(ily, [IntegerLit(123), IntegerLit(456), Id(fay)]), FuncCall(jtq, [FuncCall(gyh, [])]))]))
 ])

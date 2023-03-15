@@ -1,7 +1,6 @@
 from MT22Visitor import MT22Visitor
 from MT22Parser import MT22Parser
 from AST import *
-# from functools import reduce
 
 class ASTGeneration(MT22Visitor):
     def visitProgram(self, ctx: MT22Parser.ProgramContext):
@@ -21,6 +20,8 @@ class ASTGeneration(MT22Visitor):
         if ctx.COLON():
             id_list = self.visit(ctx.id_list())
             var_type = self.visit(ctx.types())
+            # if len(id_list) == 1: 
+            #     return VarDecl(id_list[0], var_type)
             return [VarDecl(x, var_type) for x in id_list]
         
         id_list = [ctx.ID().getText()]
@@ -33,6 +34,8 @@ class ASTGeneration(MT22Visitor):
             else:
                 id_list = id_list + [mixed_list[i][0]]
                 exp_list = [mixed_list[i][1]] + exp_list
+        # if len(id_list) == 1:
+        #     return VarDecl(id_list[i], var_type, exp_list[i])
         return [VarDecl(id_list[i], var_type, exp_list[i]) for i in range(len(id_list))]
         
     def visitNextID(self, ctx:MT22Parser.NextIDContext):
@@ -141,22 +144,35 @@ class ASTGeneration(MT22Visitor):
             return self.visit(ctx.exp6())
         return UnExpr("!", self.visit(ctx.exp5()))
 
+    # def visitExp6(self, ctx:MT22Parser.Exp6Context):
+    #     if ctx.getChildCount() == 1:
+    #         return self.visit(ctx.exp7())
+    #     return UnExpr("-", self.visit(ctx.exp6()))
+
     def visitExp6(self, ctx:MT22Parser.Exp6Context):
         if ctx.getChildCount() == 1:
-            return self.visit(ctx.exp7())
+            return self.visit(ctx.operands())
         return UnExpr("-", self.visit(ctx.exp6()))
     
-    def visitExp7(self, ctx:MT22Parser.Exp7Context):
-        if ctx.getChildCount() == 1:
-            return self.visit(ctx.operands())
-        _id = self.visit(ctx.exp7())
-        return ArrayCell(_id, self.visit(ctx.index()))
+    # def visitExp7(self, ctx:MT22Parser.Exp7Context):
+    #     if ctx.getChildCount() == 1:
+    #         return self.visit(ctx.operands())
+    #     _id = self.visit(ctx.exp7())
+    #     return ArrayCell(_id, self.visit(ctx.index()))
     
     def visitOperands(self, ctx:MT22Parser.OperandsContext):
-        return self.visit(ctx.literals()) if ctx.literals() else Id(ctx.ID().getText()) if ctx.ID() else self.visit(ctx.func_call()) if ctx.func_call() else self.visit(ctx.exp())
+        if ctx.getChildCount() == 2:
+            return ArrayCell(ctx.ID().getText(), self.visit(ctx.index()))
+        if ctx.literals(): 
+            return self.visit(ctx.literals())
+        if ctx.ID():
+            return Id(ctx.ID().getText())
+        if ctx.func_call(): 
+            return self.visit(ctx.func_call())
+        return self.visit(ctx.exp())
     
     def visitFunc_call(self, ctx:MT22Parser.Func_callContext):
-        return FuncCall(Id(ctx.ID().getText()), self.visit(ctx.call_body()))
+        return FuncCall(ctx.ID().getText(), self.visit(ctx.call_body()))
 
     def visitStmt(self, ctx:MT22Parser.StmtContext):
         return self.visitChildren(ctx)
@@ -182,7 +198,7 @@ class ASTGeneration(MT22Visitor):
     def visitScalar_var(self, ctx:MT22Parser.Scalar_varContext):
         if ctx.getChildCount() == 1:
             return Id(ctx.ID().getText())
-        return Id(ctx.ID().getText()), self.visit(ctx.index())
+        return ArrayCell(ctx.ID().getText(), self.visit(ctx.index()))
     
     def visitLhs_list(self, ctx:MT22Parser.Lhs_listContext):
         if ctx.getChildCount() == 1:
@@ -241,14 +257,16 @@ class ASTGeneration(MT22Visitor):
     
     def visitBlock_body(self, ctx:MT22Parser.Block_bodyContext):
         if ctx.getChildCount() == 0: return []
-        return [self.visit(ctx.block_element())] + self.visit(ctx.block_body2())
+        return self.visit(ctx.block_element()) + self.visit(ctx.block_body2())
     
     def visitBlock_body2(self, ctx:MT22Parser.Block_bodyContext):
         if ctx.getChildCount() == 0: return []
-        return [self.visit(ctx.block_element())] + self.visit(ctx.block_body2())
+        return self.visit(ctx.block_element()) + self.visit(ctx.block_body2())
     
     def visitBlock_element(self, ctx:MT22Parser.Block_elementContext):
-        return self.visitChildren(ctx)
+        if ctx.stmt():
+            return [self.visitChildren(ctx)]
+        return self.visitChildren(ctx)        
     
     def visitIndex_int(self, ctx:MT22Parser.Index_intContext):
         return self.visit(ctx.list_int())
@@ -289,7 +307,7 @@ class ASTGeneration(MT22Visitor):
         return BooleanLit(ctx.BOOL_LIT().getText() == "true")
     
     def visitArray_lit(self, ctx:MT22Parser.Array_litContext):
-        return self.visit(ctx.exp_list())
+        return ArrayLit(self.visit(ctx.exp_list()))
     
     def visitExp_list(self, ctx:MT22Parser.Exp_listContext):
         if ctx.getChildCount() == 0:

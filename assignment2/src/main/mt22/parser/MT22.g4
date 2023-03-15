@@ -49,10 +49,10 @@ exp2: exp2 (AND | OR) exp3 | exp3;
 exp3: exp3 (ADD | SUB) exp4 | exp4;
 exp4: exp4 (MUL | DIV | MOD) exp5 | exp5;
 exp5: NOT exp5 | exp6;
-exp6: SUB exp6 | exp7;
-exp7: exp7 index | operands;
+exp6: SUB exp6 | operands;
+// exp7: exp7 index | operands;
 
-operands: literals | ID | func_call | LP exp RP;
+operands: literals | ID index | ID | func_call | LP exp RP ;
 
 func_call: ID LP call_body RP;
 

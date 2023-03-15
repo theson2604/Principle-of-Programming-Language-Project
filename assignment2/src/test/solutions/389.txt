@@ -1,3 +1,3 @@
 Program([
-	FuncDecl(main, VoidType, [], None, BlockStmt([[<AST.VarDecl object at 0x000001DE73CF92B0>], [<AST.VarDecl object at 0x000001DE73CF94C0>, <AST.VarDecl object at 0x000001DE73CF9A90>], [<AST.VarDecl object at 0x000001DE73C79640>, <AST.VarDecl object at 0x000001DE73CDA7F0>, <AST.VarDecl object at 0x000001DE73CDAFD0>], AssignStmt(Id(x), Id(y))]))
+	FuncDecl(main, VoidType, [], None, BlockStmt([VarDecl(a, IntegerType), VarDecl(b, ArrayType([0, 15], BooleanType)), VarDecl(c, ArrayType([0, 15], BooleanType)), VarDecl(x, FloatType, FloatLit(3.2)), VarDecl(y, FloatType, FloatLit(2.0)), VarDecl(z, FloatType, FloatLit(0.003)), AssignStmt(Id(x), Id(y))]))
 ])

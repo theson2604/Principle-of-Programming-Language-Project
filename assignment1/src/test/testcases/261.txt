@@ -1,0 +1,5 @@
+
+            a, b, c: boolean;
+            x, y, z: float ;
+            g, h, i: array[0 , 5] with boolean ;
+        

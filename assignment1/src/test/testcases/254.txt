@@ -1,0 +1,5 @@
+
+            main: function void() {
+                a: boolean = a&&t == var[1]||fwo(129,452,123);
+            }
+        

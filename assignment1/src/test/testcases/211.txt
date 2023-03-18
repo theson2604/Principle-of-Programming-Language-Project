@@ -1,0 +1,5 @@
+string_test: function integer(tmp: integer) {
+            a: boolean = false;
+            return tmp;
+        }
+        

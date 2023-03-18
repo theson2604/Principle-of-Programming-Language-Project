@@ -1,0 +1,8 @@
+
+        main: function integer ()
+        {
+            // Test line comment
+            /* test block comment */
+            return 264;
+        }
+        

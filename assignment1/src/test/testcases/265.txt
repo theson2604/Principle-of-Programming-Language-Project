@@ -1,0 +1,6 @@
+
+            test: function void (){
+                while 1<3<5<8 ok();
+                
+            }
+        

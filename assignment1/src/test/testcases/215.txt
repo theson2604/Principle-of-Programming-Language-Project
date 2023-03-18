@@ -1,0 +1,3 @@
+
+            main: function string(out a: array[1,1] of string, b: void, inherit c: boolean) {}
+        

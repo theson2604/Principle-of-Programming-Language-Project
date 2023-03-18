@@ -1,0 +1,4 @@
+assign_test: function void() {
+            a: boolean = false;
+        }
+        

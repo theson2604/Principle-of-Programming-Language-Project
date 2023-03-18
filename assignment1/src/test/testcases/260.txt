@@ -1,0 +1,5 @@
+
+            a, w, c: boolean;
+            x, l, z: float ;
+            g, k, i: array[4 , 6] of string = {a,w,"10"};
+        

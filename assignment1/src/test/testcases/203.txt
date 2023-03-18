@@ -1,0 +1,4 @@
+loop_test: function void() {
+            for (a = 5, a <= 10, a + 1) {}
+            return;
+        }

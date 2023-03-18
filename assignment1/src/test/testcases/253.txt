@@ -1,0 +1,5 @@
+
+            main: function void() {
+                ol: boolean = e&&f||c&&d;
+            }
+        

@@ -1,0 +1,5 @@
+
+            a, b, l: boolean;
+            e, y, z: float ;
+            g, t, i: arr[0 , 8] of boolean ;
+        

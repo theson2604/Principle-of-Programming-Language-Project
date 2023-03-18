@@ -1,0 +1,4 @@
+while_test: function integer() {
+    while (cond != true) {printeger(a, b, 5);}
+    return a;
+}

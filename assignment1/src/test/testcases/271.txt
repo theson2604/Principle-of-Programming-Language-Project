@@ -1,0 +1,12 @@
+
+            main: function void() {
+                a: integer = 123;
+                b: string = "string";
+                c: boolean = true;
+                d: float = 1.234;
+                e: auto = var;
+                f: string = foo();
+                g: integer = var2[1,2,3];
+                f: auto = (123)-(123);
+            }
+        

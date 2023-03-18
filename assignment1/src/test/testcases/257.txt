@@ -1,0 +1,5 @@
+
+            main: function void() {
+                a: auto = a::h==b::w;
+            }
+        

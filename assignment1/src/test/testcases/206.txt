@@ -1,0 +1,6 @@
+string_test: function void() {
+    tmp: integer = 25;
+    for (a = 5, a != tmp, a + 1) {
+        break;
+    }
+}

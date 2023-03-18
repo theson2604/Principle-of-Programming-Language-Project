@@ -1,0 +1,5 @@
+
+            main: function void() {
+                a: auto = -var[a||3==b*!-g[12]];
+            }
+        

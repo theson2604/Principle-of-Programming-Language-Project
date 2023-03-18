@@ -1,0 +1,4 @@
+assign_test: function void() {
+            a = b = e = arr[5] = "this is a string";
+        }
+        

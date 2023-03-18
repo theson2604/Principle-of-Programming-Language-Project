@@ -1,0 +1,2 @@
+/*hello
+friend\randlololo*/abc=3_32e+0

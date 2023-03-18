@@ -1,4 +1,4 @@
-
-a, B, c: integer;
-x, Y, Z: boolean ;
-g: array [2,3] of float={{2,1,6},{4,2,1}};
+main: function void () {
+            for (a = 1, a[][] <= 1, a + 1) {
+            }
+        }

@@ -1,9 +1,0 @@
-Program([
-	VarDecl(a, IntegerType)
-	VarDecl(B, IntegerType)
-	VarDecl(c, IntegerType)
-	VarDecl(x, BooleanType)
-	VarDecl(Y, BooleanType)
-	VarDecl(Z, BooleanType)
-	VarDecl(g, ArrayType([2, 3], FloatType), ArrayLit([ArrayLit([IntegerLit(2), IntegerLit(1), IntegerLit(6)]), ArrayLit([IntegerLit(4), IntegerLit(2), IntegerLit(1)])]))
-])

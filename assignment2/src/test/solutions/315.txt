@@ -1,3 +1,5 @@
 Program([
-	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, ArrayType([3], IntegerType)), Param(b, ArrayType([3], FloatType))], None, BlockStmt([VarDecl(c, ArrayType([3], BooleanType), ArrayLit([BooleanLit(True), BooleanLit(False), BooleanLit(True)])), AssignStmt(ArrayCell(c, [BinExpr(+, IntegerLit(3), Id(a))]), BinExpr(+, ArrayCell(a, [ArrayCell(b, [BinExpr(-, BinExpr(+, Id(f), ArrayCell(y, [IntegerLit(2)])), BinExpr(*, ArrayCell(h, [ArrayCell(t, [BinExpr(+, IntegerLit(5), Id(j))])]), IntegerLit(4)))])]), IntegerLit(3)))]))
+	VarDecl(i, IntegerType, IntegerLit(3))
+	FuncDecl(func, StringType, [], None, BlockStmt([VarDecl(var, StringType, StringLit(test)), ReturnStmt(Id(var))]))
+	FuncDecl(test, VoidType, [], None, BlockStmt([VarDecl(a, StringType), CallStmt(print, StringLit(hello wrodl)), WhileStmt(BooleanLit(True), AssignStmt(Id(a), FuncCall(func, [])))]))
 ])

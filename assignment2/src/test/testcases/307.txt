@@ -1,5 +1,3 @@
-
-foo: function integer () {
-    a: float;
-    return 2;
-}
+main: function integer() {
+                    while(1) continue;
+                   }

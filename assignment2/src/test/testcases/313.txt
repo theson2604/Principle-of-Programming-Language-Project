@@ -1,8 +1,5 @@
-
-main: function array [3,2] of boolean (
-a : integer,
-b : float,
-c: integer 
-) {
-    a = foo(3);    
+test: function boolean(a: array[3] of string) {
+if (a[1] == "hello world") break;
+else return a[1];
+return "return";
 }

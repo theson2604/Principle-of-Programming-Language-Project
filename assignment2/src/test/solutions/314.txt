@@ -1,3 +1,3 @@
 Program([
-	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, ArrayType([3, 2], BooleanType))], None, BlockStmt([AssignStmt(Id(a), ArrayCell(b, [FuncCall(foo, [IntegerLit(2), IntegerLit(4)]), ArrayCell(b, [IntegerLit(1), FuncCall(get, [BinExpr(+, Id(a), FuncCall(foo, [IntegerLit(2)])), Id(a)])])])), ReturnStmt(Id(b))]))
+	FuncDecl(test, BooleanType, [Param(a, ArrayType([3], StringType))], None, BlockStmt([IfStmt(BinExpr(==, ArrayCell(a, [IntegerLit(1)]), StringLit(hello world)), IfStmt(BinExpr(==, ArrayCell(a, [IntegerLit(0)]), StringLit(hello worlds)), ReturnStmt(ArrayCell(a, [IntegerLit(1)]))), ReturnStmt(ArrayCell(a, [IntegerLit(0)]))), ReturnStmt(StringLit(return))]))
 ])

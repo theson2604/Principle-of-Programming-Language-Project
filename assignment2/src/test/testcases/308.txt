@@ -1,6 +1,4 @@
-
-foo: function void (x: integer){
-    a, b, c: float = 3.2,4.1,6.;
-    a = b + c;
-    return;
+test: function boolean() {
+a: array[23,5,3] of integer;
+while(true) break;
 }

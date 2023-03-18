@@ -1,7 +1,4 @@
-
-main: function array [3,2] of boolean (
-a : integer,
-b : float) {
-    c : integer = 3;
-    a = 5;    
+test: function boolean(a: array[3] of float) {
+foo(foo(foo(foo(foo(1,3333,foo(a[3],a[0],3)))),222,a[1]),a[1]+foo(1,2,3));
+return false;
 }

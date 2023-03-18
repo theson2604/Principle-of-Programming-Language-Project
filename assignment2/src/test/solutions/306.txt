@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(main, IntegerType, [], None, BlockStmt([ForStmt(AssignStmt(Id(i), IntegerLit(1)), BinExpr(<, Id(m), IntegerLit(10)), BinExpr(+, Id(i), IntegerLit(1)), BlockStmt([ForStmt(AssignStmt(Id(j), BinExpr(+, Id(m), IntegerLit(1))), BinExpr(<, Id(j), IntegerLit(100)), BinExpr(*, Id(j), IntegerLit(3)), BlockStmt([VarDecl(s, IntegerType, BinExpr(+, Id(j), IntegerLit(1))), IfStmt(BinExpr(==, Id(s), IntegerLit(1)), ReturnStmt(IntegerLit(3)))]))])), ReturnStmt(BinExpr(*, Id(a), IntegerLit(2)))]))
+])

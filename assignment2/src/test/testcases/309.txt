@@ -1,7 +1,4 @@
-
-foo: function void (x: integer, z: float, g:boolean, h: string) {
-    a, b, c: float;
-    p: boolean;
-    q: string;
-    i, j: integer;
+test: function boolean(a: array[3] of integer) {
+foo(3,a+1,a!=1,a[1]);
+return true;
 }

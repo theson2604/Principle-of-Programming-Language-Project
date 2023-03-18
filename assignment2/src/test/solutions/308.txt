@@ -1,3 +1,3 @@
 Program([
-	FuncDecl(foo, VoidType, [Param(x, IntegerType)], None, BlockStmt([VarDecl(a, FloatType, FloatLit(3.2)), VarDecl(b, FloatType, FloatLit(4.1)), VarDecl(c, FloatType, FloatLit(6.0)), AssignStmt(Id(a), BinExpr(+, Id(b), Id(c))), ReturnStmt()]))
+	FuncDecl(test, BooleanType, [], None, BlockStmt([VarDecl(a, ArrayType([23, 5, 3], IntegerType)), WhileStmt(BooleanLit(True), BreakStmt())]))
 ])

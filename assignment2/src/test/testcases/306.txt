@@ -1,4 +1,9 @@
-main: function void () {
-            for (a = 1, a[][] <= 1, a + 1) {
-            }
-        }
+main: function integer() {
+                    for (i=1, m<10, i+1) {
+                        for (j = m+1, j < 100, j*3) {
+                            s: integer = j + 1;
+                            if(s==1) return 3;
+                        }
+                    }
+                    return a*2;
+                   }

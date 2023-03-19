@@ -1,7 +1,6 @@
-test: function boolean(a: array[3] of string) {
-if (a[1] == "hello world") 
-if (a[0] == "hello worlds")
-else return a[1]
-else return a[0]
-return "return";
+test: function boolean(a: array[3] of boolean) {
+if (true)
+if (false)
+else return true;
+return true;
 }

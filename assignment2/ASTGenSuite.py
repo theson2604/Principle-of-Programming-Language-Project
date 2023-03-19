@@ -139,14 +139,15 @@ return "return";
         self.assertTrue(TestAST.test(input,expect,313))
 
     def test_14(self):
-        input = r"""test: function boolean(a: array[3] of boolean) {
-if (true)
-if (false)
-else return true;
-return true;
+        input = r"""test: function boolean(a: array[3] of string) {
+if (a[1] == "hello world") 
+if (a[0] == "hello worlds")
+else return a[1]
+# else return a[0]
+return "return";
 }"""
         expect = """Program([
-	FuncDecl(test, BooleanType, [Param(a, ArrayType([3], BooleanType))], None, BlockStmt([IfStmt(BooleanLit(True), IfStmt(BooleanLit(False), ReturnStmt(BooleanLit(True)))), ReturnStmt(BooleanLit(True))]))
+	FuncDecl(test, BooleanType, [Param(a, ArrayType([3], StringType))], None, BlockStmt([IfStmt(BinExpr(==, ArrayCell(a, [IntegerLit(1)]), StringLit(hello world)), IfStmt(BinExpr(==, ArrayCell(a, [IntegerLit(0)]), StringLit(hello worlds)), ReturnStmt(ArrayCell(a, [IntegerLit(1)]))), ReturnStmt(ArrayCell(a, [IntegerLit(0)]))), ReturnStmt(StringLit(return))]))
 ])"""
         self.assertTrue(TestAST.test(input,expect,314))
 

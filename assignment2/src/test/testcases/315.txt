@@ -7,7 +7,7 @@
         test: function void(){
             a: string;
             print("hello wrodl");
-            while(true) a = func()
+            while(true) a = func();
         }
 
 }

@@ -728,3 +728,21 @@ return true;
 	VarDecl(c, IntegerType, IntegerLit(7))
 ])"""
         self.assertTrue(TestAST.test(input,expect,349)) 
+
+    def test_50(self):
+        input = r"""
+        main: function integer() {
+            if (a)
+            if (b)
+            if (c)
+            if (d)
+            else a=c;
+            else d=f;
+            else return 0;
+            return 0;
+        }
+}"""
+        expect = """Program([
+	FuncDecl(main, IntegerType, [], None, BlockStmt([IfStmt(Id(a), IfStmt(Id(b), IfStmt(Id(c), IfStmt(Id(d), AssignStmt(Id(a), Id(c)), AssignStmt(Id(d), Id(f))), ReturnStmt(IntegerLit(0))))), ReturnStmt(IntegerLit(0))]))
+])"""
+        self.assertTrue(TestAST.test(input,expect,350)) 

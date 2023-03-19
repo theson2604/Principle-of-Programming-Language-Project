@@ -1,3 +1,3 @@
 Program([
-	FuncDecl(foo, VoidType, [], None, BlockStmt([IfStmt(BooleanLit(True), BlockStmt([]), CallStmt(ok, ))]))
+	FuncDecl(main, IntegerType, [], None, BlockStmt([IfStmt(Id(a), IfStmt(Id(b), IfStmt(Id(c), IfStmt(Id(d), AssignStmt(Id(a), Id(c)), AssignStmt(Id(d), Id(f))), ReturnStmt(IntegerLit(0))))), ReturnStmt(IntegerLit(0))]))
 ])

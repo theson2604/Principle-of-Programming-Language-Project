@@ -1,31 +1,9 @@
 
-a, b, c: float;
-x, y, z: boolean;
-g, h, y: integer;
-
-nty: function float() 
-{
-    x, y, z: integer;
-    readString();
-    // This is readString()
-
-    fs = readFloat();
-    
-    {
-        for (i = 4, i > -6, i -1) h = 6;
-        if (i > 6) return 0;
-    }
-
-    return 1;
-}
-
-q, w : integer;
-
-hgt: function boolean() {
-    a: string;
-    /*
-        =======================================
-        Comment here
-        =======================================
-    */
+        /* global variables*/
+        a: integer = 100; // global int
+        b: float = 3.e-16; // global float
+        func: function string(num: integer) {
+            if (a < num) return tostring(a) + " is less than" + tostring(num);
+            else return tostring(a) + " is greater than" + tostring(num);
+        }
 }

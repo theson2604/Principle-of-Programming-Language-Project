@@ -1,14 +1,10 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) { 
-    if (a == 1) {
-        if (b > 3)  c = 5;
-        else d = 1;
-        if (e < 4) ok();
-    }
-    else {
-        if (h > 5) nty(); else lyo();
-        g = 5;
-    }
+        x,y: float; a,b,c:integer;
+        _foo: function boolean(){
+			for(x = 0, x < 20, x+1) {
+				a = c+4;
+			}
+            return true;
+        }
+
 }

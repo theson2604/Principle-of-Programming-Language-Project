@@ -1,3 +1,3 @@
 Program([
-	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType)], None, BlockStmt([IfStmt(BinExpr(!=, BinExpr(==, Id(a), BinExpr(||, IntegerLit(1), Id(b))), BinExpr(&&, IntegerLit(2), UnExpr(!, Id(c)))), CallStmt(ok, )), AssignStmt(Id(a), IntegerLit(3))]))
+	FuncDecl(replace_all, ArrayType([10], StringType), [Param(arr, ArrayType([10], StringType)), Param(x, StringType), Param(alter, StringType)], None, BlockStmt([ForStmt(AssignStmt(Id(i), IntegerLit(0)), BinExpr(<, Id(i), FuncCall(len, [Id(arr)])), BinExpr(+, Id(i), IntegerLit(1)), BlockStmt([IfStmt(BinExpr(==, ArrayCell(arr, [Id(i)]), Id(x)), AssignStmt(ArrayCell(arr, [Id(i)]), Id(alter)))])), ReturnStmt(Id(arr))]))
 ])

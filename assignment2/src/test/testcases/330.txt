@@ -1,13 +1,10 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) { 
-    if (a == 1) 
-        if (b==2)
-            a = a + 1;
-        else a = a -2;
-    else 
-    c = 3;
-    b = c + e * 2;
-}
+        x,y: float; a,b,c:integer;
+        foo: function boolean(){
+			if (a == 3) {
+				x = .4e-33333333;
+			}
+            return true;
+        }
 
+}

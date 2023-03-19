@@ -1,3 +1,6 @@
 Program([
-	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType)], None, BlockStmt([WhileStmt(BinExpr(<, Id(i), IntegerLit(1)), AssignStmt(Id(i), BinExpr(+, Id(i), IntegerLit(1))))]))
+	VarDecl(a, ArrayType([4, 5, 6], IntegerType))
+	VarDecl(b, ArrayType([5, 6, 7], FloatType))
+	VarDecl(c, ArrayType([5, 6, 7], BooleanType))
+	VarDecl(d, ArrayType([20, 21, 22], StringType))
 ])

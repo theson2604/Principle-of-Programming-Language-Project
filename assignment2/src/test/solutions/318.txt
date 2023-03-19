@@ -1,3 +1,6 @@
 Program([
-	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType)], None, BlockStmt([AssignStmt(Id(a), IntegerLit(3)), AssignStmt(Id(a), BinExpr(&&, BinExpr(%, BinExpr(/, BinExpr(/, BinExpr(*, BinExpr(/, Id(b), IntegerLit(2)), Id(n)), IntegerLit(4)), IntegerLit(5)), Id(g)), BinExpr(%, BinExpr(/, BinExpr(*, IntegerLit(2), IntegerLit(9)), IntegerLit(4)), IntegerLit(2))))]))
+	VarDecl(i, IntegerType, IntegerLit(3))
+	VarDecl(i2, IntegerType, IntegerLit(4))
+	VarDecl(i3, IntegerType, IntegerLit(5))
+	FuncDecl(main, IntegerType, [Param(a, ArrayType([444, 444, 444], StringType)), Param(b, ArrayType([333], IntegerType))], None, BlockStmt([AssignStmt(ArrayCell(a, [ArrayCell(b, [IntegerLit(2)]), ArrayCell(b, [IntegerLit(22)]), ArrayCell(b, [IntegerLit(222)])]), IntegerLit(444)), ReturnStmt(ArrayCell(a, [ArrayCell(b, [IntegerLit(2)]), ArrayCell(b, [IntegerLit(22)]), ArrayCell(b, [IntegerLit(222)])]))]))
 ])

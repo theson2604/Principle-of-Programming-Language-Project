@@ -1,8 +1,9 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) {
-    a = true && false || 1 > 2 +(1 && 2);
-    if (a == 2) ok();
-    a = 3;    
+        is_prime: function boolean(num: integer){
+            for (i = 2, i<sqrt(num), i+1) {
+				if (num % i == 0) return false;
+			}
+            return true;
+        }
+
 }

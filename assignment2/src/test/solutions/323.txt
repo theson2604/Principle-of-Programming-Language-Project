@@ -1,3 +1,3 @@
 Program([
-	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType)], None, BlockStmt([AssignStmt(Id(a), BinExpr(||, BinExpr(&&, BooleanLit(True), UnExpr(!, IntegerLit(3))), UnExpr(-, UnExpr(-, UnExpr(-, UnExpr(-, Id(b)))))))]))
+	FuncDecl(test_input, VoidType, [], None, BlockStmt([VarDecl(i, IntegerType), VarDecl(s, FloatType, IntegerLit(0)), CallStmt(write, StringLit(input your number: )), CallStmt(readLn, Id(i)), ForStmt(AssignStmt(Id(s), FloatLit(0.0)), BinExpr(!=, Id(s), IntegerLit(0)), BinExpr(*, Id(s), Id(s)), BlockStmt([CallStmt(print, Id(s))]))]))
 ])

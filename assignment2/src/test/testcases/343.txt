@@ -1,10 +1,6 @@
 
-            foo: function void()
-            {
-                while (1 < 2) { 
-                    while (true)
-                        something();
-                        /*This is a comment*/
-                }
-            }
-            
+        main: function void() {   
+            a = a+5*f - (eee %(a != b*333+c*s) + fgh % adc ------ 666666 *(3.e11) ) / ee % qUE + ---- 4 * (((((.e-23))))) + 2e5;
+            return a;
+        }}
+}

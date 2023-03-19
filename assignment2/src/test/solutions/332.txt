@@ -1,3 +1,8 @@
 Program([
-	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType)], None, BlockStmt([IfStmt(BinExpr(==, Id(a), IntegerLit(1)), BlockStmt([IfStmt(BinExpr(>, Id(b), IntegerLit(3)), AssignStmt(Id(c), IntegerLit(5)), AssignStmt(Id(d), IntegerLit(1))), IfStmt(BinExpr(<, Id(e), IntegerLit(4)), CallStmt(ok, ))]), BlockStmt([IfStmt(BinExpr(>, Id(h), IntegerLit(5)), CallStmt(nty, ), CallStmt(lyo, )), AssignStmt(Id(g), IntegerLit(5))]))]))
+	VarDecl(x, FloatType)
+	VarDecl(y, FloatType)
+	VarDecl(a, IntegerType)
+	VarDecl(b, IntegerType)
+	VarDecl(c, IntegerType)
+	FuncDecl(_foo, BooleanType, [], None, BlockStmt([ForStmt(AssignStmt(Id(x), IntegerLit(0)), BinExpr(<, Id(x), IntegerLit(20)), BinExpr(+, Id(x), IntegerLit(1)), BlockStmt([AssignStmt(Id(a), BinExpr(+, Id(c), IntegerLit(4)))])), ReturnStmt(BooleanLit(True))]))
 ])

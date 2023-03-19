@@ -1,3 +1,3 @@
 Program([
-	FuncDecl(main, StringType, [], None, BlockStmt([AssignStmt(Id(a), StringLit( hello)), AssignStmt(Id(b), StringLit(world)), AssignStmt(Id(c), BinExpr(::, BinExpr(::, Id(a), StringLit( )), Id(b))), ReturnStmt(Id(c))]))
+	FuncDecl(main, VoidType, [], None, BlockStmt([AssignStmt(Id(a), StringLit(      abc                ;;   cltq ))]))
 ])

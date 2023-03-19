@@ -1,10 +1,10 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) {
-    if (a == 1) {
-        b : integer;
-        a = 5;
-        
-    }
+        check_increment: function boolean(arr: array [10] of integer){
+			cur: integer = arr[0];
+            for (i = 1, i<len(arr), i+1) {
+				if (arr[i] < cur) return false;
+			}
+            return true;
+        }
+
 }

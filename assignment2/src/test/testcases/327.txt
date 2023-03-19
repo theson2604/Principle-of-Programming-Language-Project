@@ -1,9 +1,9 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) {
-    if ((a == 1 || b) != 2 && !c)
-        ok();
-    a = 3;    
-}
+        replace_all: function array[10] of string(arr: array [10] of string, x: string, alter: string){
+            for (i = 0, i<len(arr), i+1) {
+				if (arr[i] == x) arr[i] = alter;
+			}
+            return arr;
+        }
 
+}

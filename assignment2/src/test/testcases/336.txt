@@ -1,10 +1,14 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) { 
-    foo();
-    bar(1);
-    nty(1, 2, 3);
-    pty(hyy, dyf(), ily(123, 456, fay), jtq(gyh())) ;  
+        a : array [4,5,6] of integer;
+        b : array [5,6,7] of float;
+        c : array [5,6,7] of boolean;
+        d : array [20,21,22] of string;
+        main: function void(){
+			if (true)
+                if (a[4,3,2] == b[3,c[2,3,4],6])
+                    if (a == b)
+                        error();
+            else 
+                print("else of first if");
+        }
 }
-

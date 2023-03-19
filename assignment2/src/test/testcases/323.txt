@@ -1,6 +1,11 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) {
-    a = true && !3 || ----b;    
+        test_input: function void(){
+			i:integer; s:float = 0;
+            write("input your number: ");
+            readLn(i)
+            for (s = .e-10, s!=0, s*s) {
+				print(s);
+			}
+        }
+
 }

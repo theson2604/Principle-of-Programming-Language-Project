@@ -1,3 +1,9 @@
 Program([
-	FuncDecl(foo, VoidType, [], None, BlockStmt([ForStmt(AssignStmt(Id(x), UnExpr(-, IntegerLit(2))), BinExpr(<, Id(x), ArrayCell(b, [IntegerLit(2)])), BinExpr(-, Id(x), IntegerLit(3)), ForStmt(AssignStmt(Id(y), UnExpr(-, FloatLit(3e-06))), BinExpr(<, Id(y), Id(x)), BinExpr(*, Id(y), FloatLit(1.5)), BlockStmt([CallStmt(a, ), CallStmt(b, )])))]))
+	VarDecl(a, IntegerType, IntegerLit(1))
+	VarDecl(b, IntegerType, IntegerLit(3))
+	VarDecl(c, IntegerType, IntegerLit(7))
+	VarDecl(d, FloatType, FloatLit(3.3))
+	VarDecl(e, FloatType, FloatLit(0.0))
+	VarDecl(f, FloatType, FloatLit(inf))
+	FuncDecl(foo, IntegerType, [Param(a, BooleanType), Param(b, StringType)], None, BlockStmt([WhileStmt(FuncCall(foo, [FuncCall(boo, [FuncCall(test, [Id(a), Id(b)]), Id(a)]), Id(b), FuncCall(foo, [Id(a), Id(b), Id(c)])]), BlockStmt([CallStmt(print, StringLit(hellowold!))])), ReturnStmt(IntegerLit(0))]))
 ])

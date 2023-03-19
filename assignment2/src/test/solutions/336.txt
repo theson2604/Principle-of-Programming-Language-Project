@@ -1,3 +1,7 @@
 Program([
-	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType)], None, BlockStmt([CallStmt(foo, ), CallStmt(bar, IntegerLit(1)), CallStmt(nty, IntegerLit(1), IntegerLit(2), IntegerLit(3)), CallStmt(pty, Id(hyy), FuncCall(dyf, []), FuncCall(ily, [IntegerLit(123), IntegerLit(456), Id(fay)]), FuncCall(jtq, [FuncCall(gyh, [])]))]))
+	VarDecl(a, ArrayType([4, 5, 6], IntegerType))
+	VarDecl(b, ArrayType([5, 6, 7], FloatType))
+	VarDecl(c, ArrayType([5, 6, 7], BooleanType))
+	VarDecl(d, ArrayType([20, 21, 22], StringType))
+	FuncDecl(main, VoidType, [], None, BlockStmt([IfStmt(BooleanLit(True), IfStmt(BinExpr(==, ArrayCell(a, [IntegerLit(4), IntegerLit(3), IntegerLit(2)]), ArrayCell(b, [IntegerLit(3), ArrayCell(c, [IntegerLit(2), IntegerLit(3), IntegerLit(4)]), IntegerLit(6)])), IfStmt(BinExpr(==, Id(a), Id(b)), CallStmt(error, ), CallStmt(print, StringLit(else of first if)))))]))
 ])

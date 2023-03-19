@@ -1,2 +1,5 @@
 
-a: integer;
+        main: function void() {   
+            a[5] = "hellooooooo /n welcome";
+        }}
+}

@@ -1,8 +1,13 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) {
-    a = 3;    
-    a = b + 2 + n || 4 + 5 - g && 2 - 9;
-}
+        i, i2, i3: integer = 3, 4, 5;
+        func: function void(a: integer, c: float){
+            Write("nhap so 1:");
+			Readln(Num1);
+			Writeln("nhap so 2:");
+			Readln(Num2);
+			Sum = Num1 + Num2;
+			Write(Sum);
+			Readln();
+        }
 
+}

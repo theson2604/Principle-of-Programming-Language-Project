@@ -1,7 +1,10 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) {
-    a = true && false || 1 > 2 + (1 && 2);
-    a = 3;    
+        mod_5: function integer(arr: array [10] of integer){
+			num: integer = 0;
+            for (i = 0, i<len(arr), i+1) {
+				if (arr[i] % 5 == 0) num = num + 1;
+			}
+            return num;
+        }
+
 }

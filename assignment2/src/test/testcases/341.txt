@@ -1,7 +1,5 @@
 
-main: function string() {
-    a = " hello";
-    b = "world";
-    c = (a::" ")::b;
-    return c;
+        main: function void() {   
+            a = "      abc                ;;   cltq ";
+        }}
 }

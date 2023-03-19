@@ -1,7 +1,13 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) {
-    a = 3;    
-    a = ! - F * G / 5 + (I - !L && N + Y || Q *  !-P) && 6 * 5 + O / !(5 % T) ;
+        main: function void(a: array [444, 444, 444] of string, b: array [333] of integer){
+			arr: array[222] of boolean;
+            i,j,k: integer = 30,21,2;
+            for (a[4,j,i] = 0, i<2, i+333) {
+				for (aa = 0, i<2, i+333) {
+					if (a[3,3,3] <= a[b[4],i,j]) break;
+                    else continue;
+                }
+			}
+        }
+
 }

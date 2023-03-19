@@ -1,11 +1,10 @@
 
-            foo: function void()
-            {
-                for (x = -2,  x < b[2], x -3)
-                    for (y = -.3e-5, y < x, y*1.5)
-                    {
-                        a();
-                        b();
-                    }
+        a,b,c: integer = 1, 3 ,7;
+        d,e,f: float = 3.3, .e10, 1.2E333;
+        foo: function integer(a: boolean, b: string) {   
+            while (foo(boo(test(a,b),a),b,foo(a,b,c))) {
+                print("hellowold!");
             }
-            
+            return 0;
+        }}
+}

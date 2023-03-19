@@ -1,3 +1,4 @@
 Program([
-	FuncDecl(main, ArrayType([3, 2], BooleanType), [Param(a, IntegerType), Param(b, FloatType)], None, BlockStmt([AssignStmt(Id(a), IntegerLit(3)), AssignStmt(Id(a), BinExpr(<=, BinExpr(>=, BinExpr(<, BinExpr(>, IntegerLit(5), IntegerLit(6)), BinExpr(==, IntegerLit(6), IntegerLit(5))), BinExpr(>, BinExpr(+, IntegerLit(4), IntegerLit(5)), IntegerLit(1))), IntegerLit(1)))]))
+	FuncDecl(sum_real_array, FloatType, [Param(a, ArrayType([444, 444, 444], FloatType)), Param(b, IntegerType)], None, BlockStmt([VarDecl(i, IntegerType), VarDecl(s, FloatType, IntegerLit(0)), ForStmt(AssignStmt(Id(i), BinExpr(-, ArrayCell(a, [IntegerLit(3), IntegerLit(2), Id(b)]), IntegerLit(1))), BinExpr(<, Id(i), IntegerLit(2)), BinExpr(%, Id(i), IntegerLit(3333)), BlockStmt([AssignStmt(Id(s), BinExpr(+, Id(s), ArrayCell(a, [IntegerLit(3), Id(i), IntegerLit(2)])))])), ReturnStmt(Id(s))]))
+	FuncDecl(main, VoidType, [], None, BlockStmt([VarDecl(a, ArrayType([222], BooleanType)), CallStmt(writeLn, StringLit(Helloworld))]))
 ])

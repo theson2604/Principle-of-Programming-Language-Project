@@ -1,8 +1,5 @@
 
-            foo: function void()
-            {
-                for (x = - 1,  x != b[2], x * 3) {
-                    PrintLn("Hello");
-                }
-            }
-            
+        main: function void(a: boolean, b: string) {   
+            foo(boo(test(a,b),a),b,foo(a,b,c));
+        }}
+}

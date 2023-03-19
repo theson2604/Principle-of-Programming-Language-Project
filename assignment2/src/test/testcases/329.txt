@@ -1,8 +1,8 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) { 
-    if (a == 1)
-        a = 5;
-    b = c + e * 2;
+        x,y: float; a,b,c:integer;
+        foo: function boolean(){
+			x = 9.E-32;
+            return true;
+        }
+
 }

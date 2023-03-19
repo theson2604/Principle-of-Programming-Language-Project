@@ -1,8 +1,7 @@
 
-            foo: function integer(a:float)
-            {
-                while(1 < 2) while (.e2) {
-                    while (true) nothing();
-                }
-            }
-            
+        main: function array [1,2,3,4,5] of string(a: boolean, b: string) {   
+            a = (arr[3,1,23,bnm[a, b]]==3 && foo(arr[3,2,1,4,5], dev()));
+            if (a) return arr;
+            return arr;
+        }}
+}

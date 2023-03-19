@@ -1,9 +1,7 @@
 
-            main: function void ()
-            {
-                for (i = 100, i >= 1, i/2)
-                {
-                    {Dosomething(a,b);}
-                }
+        main: function void(a: boolean, b: string) {   
+            while (a) while (len(b) != 0) {
+                for (i = 0, a != false, i*i) print(i);
             }
-            
+        }}
+}

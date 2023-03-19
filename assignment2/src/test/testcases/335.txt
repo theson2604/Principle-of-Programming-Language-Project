@@ -1,10 +1,9 @@
 
-main: function array [3,2] of boolean (
-a : integer,
-b : float) { 
-    for (i = 1, i< 10, i+1) {
-        for (j = i, j >= 1, j-1)
-            if ((i + j) % 2 == 1) break;
-    }
-    
+        a : array [4,5,6] of integer;
+        b : array [5,6,7] of float;
+        c : array [5,6,7] of boolean;
+        d : array [20,21,22] of string;
+        main: function void(){
+			
+        }
 }

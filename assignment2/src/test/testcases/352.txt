@@ -1,4 +1,12 @@
 
-foo: function void() {
-    a = 1;    
+        main: function integer() {
+            if (a)
+            if (b)
+            if (c)
+            if (d)
+            b=c;
+            else a=c;
+            else d=f;
+            else return 0;
+            return 0;
 }

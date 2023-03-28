@@ -746,3 +746,36 @@ return true;
 	FuncDecl(main, IntegerType, [], None, BlockStmt([IfStmt(Id(a), IfStmt(Id(b), IfStmt(Id(c), IfStmt(Id(d), AssignStmt(Id(a), Id(c)), AssignStmt(Id(d), Id(f))), ReturnStmt(IntegerLit(0))))), ReturnStmt(IntegerLit(0))]))
 ])"""
         self.assertTrue(TestAST.test(input,expect,350)) 
+
+    def test_51_if_else(self):
+        """ Test If Else Again """
+        input = r"""
+abc: function integer (x: float, y:float)
+{
+        if (a>0) if (b>0) if (d==0) if (e > 3) a = a - 1; else b = a; else c = d; else b = 3;
+    
+}
+"""
+        expect = """Program([
+	FuncDecl(abc, IntegerType, [Param(x, FloatType), Param(y, FloatType)], None, BlockStmt([IfStmt(BinExpr(>, Id(a), IntegerLit(0)), IfStmt(BinExpr(>, Id(b), IntegerLit(0)), IfStmt(BinExpr(==, Id(d), IntegerLit(0)), IfStmt(BinExpr(>, Id(e), IntegerLit(3)), AssignStmt(Id(a), BinExpr(-, Id(a), IntegerLit(1))), AssignStmt(Id(b), Id(a))), AssignStmt(Id(c), Id(d))), AssignStmt(Id(b), IntegerLit(3))))]))
+])"""
+        self.assertTrue(TestAST.test(input, expect, 351))
+
+
+    def test_52(self):
+        input = r"""
+        main: function integer() {
+            if (a)
+            if (b)
+            if (c)
+            if (d)
+            b=c;
+            else a=c;
+            else d=f;
+            else return 0;
+            return 0;
+}"""
+        expect = """Program([
+	FuncDecl(main, IntegerType, [], None, BlockStmt([IfStmt(Id(a), IfStmt(Id(b), IfStmt(Id(c), IfStmt(Id(d), AssignStmt(Id(b), Id(c)), AssignStmt(Id(a), Id(c))), AssignStmt(Id(d), Id(f))), ReturnStmt(IntegerLit(0)))), ReturnStmt(IntegerLit(0))]))
+])"""
+        self.assertTrue(TestAST.test(input,expect,352))

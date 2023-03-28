@@ -1,6 +1,6 @@
 
-foo: function void() {
-    if (true){
-    } else {}
+abc: function integer (x: float, y:float)
+{
+        if (a>0) if (b>0) if (d==0) if (e > 3) a = a - 1; else b = a; else c = d; else b = 3;
+    
 }
-

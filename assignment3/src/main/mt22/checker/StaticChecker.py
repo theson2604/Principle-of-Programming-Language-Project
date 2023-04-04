@@ -10,15 +10,15 @@ class StaticChecker(Visitor):
     
 
     # Visit literal => return corresponding type
-    def visitIntLit(self, ctx, o):
+    def visitIntegerLit(self, ast, param): 
         return IntegerType()
     
-    def visitFloatLit(self, ctx, o):
+    def visitFloatLit(self, ast, param): 
         return FloatType()
     
-    def visitBoolLit(self, ctx, o):
+    def visitBooleanLit(self, ast, param): 
         return BooleanType()
     
-    def visitStringLit(self, ctx, o):
+    def visitStringLit(self, ast, param): 
         return StringType()
         

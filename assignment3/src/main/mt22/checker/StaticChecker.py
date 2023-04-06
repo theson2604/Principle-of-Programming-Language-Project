@@ -142,9 +142,41 @@ class Checker:
         return Checker.isReturnType(rettype) or type(rettype) in [BreakStmt, ContinueStmt]
 
 class StaticChecker(Visitor):
-    pass
+    # global_env = [[
+    #     Symbol('readInteger', FuncType([], IntegerType())),
+    #     Symbol('printInteger', FuncType([IntegerType()], VoidType())),
+    #     Symbol('readFloat', FuncType([], FloatType())),
+    #     Symbol('writeFloat', FuncType([FloatType()], VoidType())),
+    #     Symbol('readBoolean', FuncType([], BooleanType())),
+    #     Symbol('printBoolean', FuncType([BooleanType()], VoidType())),
+    #     Symbol('readString', FuncType([], StringType())),
+    #     Symbol('printString', FuncType([StringType()], VoidType())),
+    #     # Symbol('super', FuncType([IntegerType()], VoidType())),
+    # ]]
 
+    def visitProgram(self, ast, param): 
+        env = [[
+            Symbol('readInteger', FuncType([], IntegerType())),
+            Symbol('printInteger', FuncType([IntegerType()], VoidType())),
+            Symbol('readFloat', FuncType([], FloatType())),
+            Symbol('writeFloat', FuncType([FloatType()], VoidType())),
+            Symbol('readBoolean', FuncType([], BooleanType())),
+            Symbol('printBoolean', FuncType([BooleanType()], VoidType())),
+            Symbol('readString', FuncType([], StringType())),
+            Symbol('printString', FuncType([StringType()], VoidType())),
+            # Symbol('super', FuncType([IntegerType()], VoidType())),
+        ]]
+        for decl in ast.decls:
+            env = self.visit(decl, env)
+
+    def visitVarDecl(self, ast, param): 
+        return Checker.checkRedeclared(param, [Symbol.fromVarDecl(ast)])
     
+    def visitFuncDecl(self, ast, param): 
+        return 
+
+    def visitParamDecl(self, ast, param): 
+        return 
 
     # Visit literal => return corresponding type
     def visitIntegerLit(self, ast, param): 

@@ -10,28 +10,28 @@ class MType:
         self.rettype = rettype
 
 class ExpUtils:
-    @staticmethod
-    def isNaN(expType):
-        return type(expType) not in [IntegerType, FloatType, AutoType]
-    
-    # @staticmethod
-    # def isOpForNumber(op):
-    #     return op in ['+', '-', '*', '/', '%', '!=', '==', '>', '<', '>=', '<=']
-
     def infer(env, name, typ):
         for symbol_list in env:
             for symbol in symbol_list:
                 if symbol.name == name:
                     symbol.typ = typ
         return typ
-
+    
     @staticmethod
-    def isOpForInt(op):
+    def isNaN(expType):
+        return type(expType) not in [IntegerType, FloatType, AutoType]
+    
+    @staticmethod
+    def isOpForNumber(op):
         return op in ['+', '-', '*', '/', '%', '!=', '==', '>', '<', '>=', '<=']
 
     @staticmethod
-    def isOpForFloat(op):
-        return op in ['+', '-', '*', '/', '>', '<', '>=', '<=']
+    def isOpForInt(op):
+        return op in ['%', '!=', '==']
+
+    # @staticmethod
+    # def isOpForFloat(op):
+    #     return op in ['+', '-', '*', '/', '>', '<', '>=', '<=']
 
     @staticmethod
     def mergeNumType(ltype, rtype):
@@ -181,8 +181,13 @@ class StaticChecker(Visitor):
             env = self.visit(decl, env)
 
     def visitVarDecl(self, ast, param): 
-        return Checker.checkRedeclared(param, [Symbol.fromVarDecl(ast)])
+        if type(ast.typ) is AutoType:
+            if ast.init is None:
+                raise Invalid(Variable(), ast.name)
+            ast.typ = self.visit(ast.init, param)
+        return Checker.checkRedeclared(param, [Symbol(ast.name, ast.typ, kind=Variable())])
     
+    #missing inherit
     def visitFuncDecl(self, ast, param): 
         params_list = [self.visit(x, scope).toParam() for x in ast.params]
         env = [[params_list]] + param
@@ -193,16 +198,41 @@ class StaticChecker(Visitor):
     def visitParamDecl(self, ast, param): 
         return Symbol(ast.name, ast.typ, inherit=True) if ast.inherit else Symbol(ast.name, ast.typ)
 
+    #missing autotype
     def visitBinExpr(self, ast, param): 
         ltype = self.visit(ast.left, param)
         rtype = self.visit(ast.right, param)
         op = ast.op
-        if ExpUtils.isOpForInt(op):
+        if ExpUtils.isOpForNumber(op):
             if ExpUtils.isNaN(ltype) or ExpUtils.isNaN(rtype):
                 raise TypeMismatchInExpression(ast)
-            if op in []
-        if ExpUtils.isNaN(ltype) and ExpUtils.isNaN(rtype):
-                
+            if op in ExpUtils.isOpForInt:
+                if FloatType in [type(ltype), type(rtype)]:
+                    raise TypeMismatchInExpression(ast)
+                if type(ltype) is AutoType:
+                    ExpUtils.infer(param, ast.left.name, IntegerType())
+                if type(rtype) is AutoType:
+                    ExpUtils.infer(param, ast.right.name, IntegerType())
+                if op == '%': 
+                    return IntegerType()
+                return BooleanType()
+            if op in ['+','-','*']: 
+                # if type(ltype) is
+                return ExpUtils.mergeNumType(ltype, rtype)
+            if op == '/': return FloatType()
+            return BooleanType()
+        if op == '::':
+            if False in [type(x) is StringType for x in [ltype, rtype]]:
+                raise TypeMismatchInExpression(ast)
+            return StringType()
+        if False in [type(x) is BooleanType for x in [ltype, rtype]]:
+            raise TypeMismatchInExpression(ast)
+        return BooleanType()
+    
+    def visitUnExpr(self, ast, param): 
+        otype = self.visit(ast.val, param)
+        op = ast.op
+        
 
     # Visit literal => return corresponding type
     def visitIntegerLit(self, ast, param): 

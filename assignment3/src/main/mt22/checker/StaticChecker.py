@@ -4,7 +4,7 @@ from Visitor import *
 from AST import *
 from functools import reduce
 
-class FuncType:
+class MType:
     def __init__(self, partype, rettype):
         self.partype = partype
         self.rettype = rettype
@@ -12,30 +12,41 @@ class FuncType:
 class ExpUtils:
     @staticmethod
     def isNaN(expType):
-        return type(expType) not in [IntegerType, FloatType]
+        return type(expType) not in [IntegerType, FloatType, AutoType]
     
+    # @staticmethod
+    # def isOpForNumber(op):
+    #     return op in ['+', '-', '*', '/', '%', '!=', '==', '>', '<', '>=', '<=']
+
+    def infer(env, name, typ):
+        for symbol_list in env:
+            for symbol in symbol_list:
+                if symbol.name == name:
+                    symbol.typ = typ
+        return typ
+
     @staticmethod
     def isOpForInt(op):
         return op in ['+', '-', '*', '/', '%', '!=', '==', '>', '<', '>=', '<=']
 
     @staticmethod
     def isOpForFloat(op):
-        return op in ['+', '-', '*', '/', '!=', '==', '>', '<', '>=', '<=']
+        return op in ['+', '-', '*', '/', '>', '<', '>=', '<=']
 
     @staticmethod
     def mergeNumType(ltype, rtype):
         return FloatType() if FloatType in [type(x) for x in [ltype, rtype]] else IntegerType()
 
 class Symbol:
-    def __init__(self, name, type, value=None, kind=Function(), isGlobal=False):
+    def __init__(self, name, type, inherit=None, kind=Function(), isGlobal=False):
         self.name = name
         self.type = type
-        self.value = value
+        self.inherit = inherit
         self.kind = kind
         self.isGlobal = isGlobal
 
     def getKind(self):
-        return self.kind if type(self.type) is FuncType else Identifier()
+        return self.kind if type(self.type) is MType else Identifier()
 
     def toTuple(self):
         return (self.name, type(self.getKind()))
@@ -65,7 +76,7 @@ class Symbol:
     @staticmethod
     def fromFuncDecl(decl):
         paramsType = [x.typ for x in decl.params]
-        return Symbol(decl.name, FuncType(paramsType, decl.return_type), kind=Function())
+        return Symbol(decl.name, MType(paramsType, decl.return_type), kind=Function())
     
     @staticmethod
     def fromDecl(decl):
@@ -143,28 +154,28 @@ class Checker:
 
 class StaticChecker(Visitor):
     # global_env = [[
-    #     Symbol('readInteger', FuncType([], IntegerType())),
-    #     Symbol('printInteger', FuncType([IntegerType()], VoidType())),
-    #     Symbol('readFloat', FuncType([], FloatType())),
-    #     Symbol('writeFloat', FuncType([FloatType()], VoidType())),
-    #     Symbol('readBoolean', FuncType([], BooleanType())),
-    #     Symbol('printBoolean', FuncType([BooleanType()], VoidType())),
-    #     Symbol('readString', FuncType([], StringType())),
-    #     Symbol('printString', FuncType([StringType()], VoidType())),
-    #     # Symbol('super', FuncType([IntegerType()], VoidType())),
+    #     Symbol('readInteger', MType([], IntegerType())),
+    #     Symbol('printInteger', MType([IntegerType()], VoidType())),
+    #     Symbol('readFloat', MType([], FloatType())),
+    #     Symbol('writeFloat', MType([FloatType()], VoidType())),
+    #     Symbol('readBoolean', MType([], BooleanType())),
+    #     Symbol('printBoolean', MType([BooleanType()], VoidType())),
+    #     Symbol('readString', MType([], StringType())),
+    #     Symbol('printString', MType([StringType()], VoidType())),
+    #     # Symbol('super', MType([IntegerType()], VoidType())),
     # ]]
 
     def visitProgram(self, ast, param): 
         env = [[
-            Symbol('readInteger', FuncType([], IntegerType())),
-            Symbol('printInteger', FuncType([IntegerType()], VoidType())),
-            Symbol('readFloat', FuncType([], FloatType())),
-            Symbol('writeFloat', FuncType([FloatType()], VoidType())),
-            Symbol('readBoolean', FuncType([], BooleanType())),
-            Symbol('printBoolean', FuncType([BooleanType()], VoidType())),
-            Symbol('readString', FuncType([], StringType())),
-            Symbol('printString', FuncType([StringType()], VoidType())),
-            # Symbol('super', FuncType([IntegerType()], VoidType())),
+            Symbol('readInteger', MType([], IntegerType())),
+            Symbol('printInteger', MType([IntegerType()], VoidType())),
+            Symbol('readFloat', MType([], FloatType())),
+            Symbol('writeFloat', MType([FloatType()], VoidType())),
+            Symbol('readBoolean', MType([], BooleanType())),
+            Symbol('printBoolean', MType([BooleanType()], VoidType())),
+            Symbol('readString', MType([], StringType())),
+            Symbol('printString', MType([StringType()], VoidType())),
+            # Symbol('super', MType([IntegerType()], VoidType())),
         ]]
         for decl in ast.decls:
             env = self.visit(decl, env)
@@ -173,10 +184,25 @@ class StaticChecker(Visitor):
         return Checker.checkRedeclared(param, [Symbol.fromVarDecl(ast)])
     
     def visitFuncDecl(self, ast, param): 
-        return 
+        params_list = [self.visit(x, scope).toParam() for x in ast.params]
+        env = [[params_list]] + param
+        for x in self.visit(ast.body, env):
+            env = self.visit(x, env)
+        return [[Symbol(ast.name, MType(params_list, ast.return_type))]] + param
 
     def visitParamDecl(self, ast, param): 
-        return 
+        return Symbol(ast.name, ast.typ, inherit=True) if ast.inherit else Symbol(ast.name, ast.typ)
+
+    def visitBinExpr(self, ast, param): 
+        ltype = self.visit(ast.left, param)
+        rtype = self.visit(ast.right, param)
+        op = ast.op
+        if ExpUtils.isOpForInt(op):
+            if ExpUtils.isNaN(ltype) or ExpUtils.isNaN(rtype):
+                raise TypeMismatchInExpression(ast)
+            if op in []
+        if ExpUtils.isNaN(ltype) and ExpUtils.isNaN(rtype):
+                
 
     # Visit literal => return corresponding type
     def visitIntegerLit(self, ast, param): 

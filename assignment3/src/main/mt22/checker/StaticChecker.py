@@ -198,7 +198,6 @@ class StaticChecker(Visitor):
     def visitParamDecl(self, ast, param): 
         return Symbol(ast.name, ast.typ, inherit=True) if ast.inherit else Symbol(ast.name, ast.typ)
 
-    #missing autotype
     def visitBinExpr(self, ast, param): 
         ltype = self.visit(ast.left, param)
         rtype = self.visit(ast.right, param)
@@ -216,15 +215,26 @@ class StaticChecker(Visitor):
                 if op == '%': 
                     return IntegerType()
                 return BooleanType()
+            if type(ltype) is AutoType():
+                ltype = ExpUtils.infer(param, ast.left.name, rtype)
+            if type(rtype) is AutoType():
+                rtype = ExpUtils.infer(param, ast.right.name, ltype)
             if op in ['+','-','*']: 
-                # if type(ltype) is
                 return ExpUtils.mergeNumType(ltype, rtype)
             if op == '/': return FloatType()
             return BooleanType()
         if op == '::':
+            if type(ltype) is AutoType():
+                ltype = ExpUtils.infer(param, ast.left.name, StringType())
+            if type(rtype) is AutoType():
+                rtype = ExpUtils.infer(param, ast.right.name, StringType())
             if False in [type(x) is StringType for x in [ltype, rtype]]:
                 raise TypeMismatchInExpression(ast)
             return StringType()
+        if type(ltype) is AutoType():
+                ltype = ExpUtils.infer(param, ast.left.name, BooleanType())
+        if type(rtype) is AutoType():
+            rtype = ExpUtils.infer(param, ast.right.name, BooleanType())
         if False in [type(x) is BooleanType for x in [ltype, rtype]]:
             raise TypeMismatchInExpression(ast)
         return BooleanType()
@@ -232,6 +242,8 @@ class StaticChecker(Visitor):
     def visitUnExpr(self, ast, param): 
         otype = self.visit(ast.val, param)
         op = ast.op
+        if op == '-':
+            if 
         
 
     # Visit literal => return corresponding type

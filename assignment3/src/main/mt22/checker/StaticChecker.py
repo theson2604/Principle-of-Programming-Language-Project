@@ -122,6 +122,7 @@ class Checker:
             if type(patternType) != type(paramType): return False
             return Checker.matchArrayType(patternType, paramType)
 
+        if AutoType in [type(patternType), type(paramType)]: return True
         if type(patternType) == type(paramType): return True
         if type(patternType) is FloatType and type(paramType) is IntegerType: return True
         return False
@@ -165,7 +166,7 @@ class StaticChecker(Visitor):
     #     # Symbol('super', MType([IntegerType()], VoidType())),
     # ]]
 
-    def visitProgram(self, ast, param): 
+    def visitProgram(self, ast: Program, param): 
         env = [[
             Symbol('readInteger', MType([], IntegerType())),
             Symbol('printInteger', MType([IntegerType()], VoidType())),
@@ -180,7 +181,7 @@ class StaticChecker(Visitor):
         for decl in ast.decls:
             env = self.visit(decl, env)
 
-    def visitVarDecl(self, ast, param): 
+    def visitVarDecl(self, ast: VarDecl, param): 
         if type(ast.typ) is AutoType:
             if ast.init is None:
                 raise Invalid(Variable(), ast.name)
@@ -188,24 +189,38 @@ class StaticChecker(Visitor):
         return Checker.checkRedeclared(param, [Symbol(ast.name, ast.typ, kind=Variable())])
     
     #missing inherit
-    def visitFuncDecl(self, ast, param): 
+    def visitFuncDecl(self, ast: FuncDecl, param): 
         params_list = [self.visit(x, scope).toParam() for x in ast.params]
         env = [[params_list]] + param
         for x in self.visit(ast.body, env):
             env = self.visit(x, env)
         return [[Symbol(ast.name, MType(params_list, ast.return_type))]] + param
 
-    def visitParamDecl(self, ast, param): 
+    def visitParamDecl(self, ast: ParamDecl, param): 
         return Symbol(ast.name, ast.typ, inherit=True) if ast.inherit else Symbol(ast.name, ast.typ)
 
-    def visitBinExpr(self, ast, param): 
+    #Statements
+    def visitAssignStmt(self, ast, param): 
+        ltype = self.visit(ast.lhs, param)
+        rtype = self.visit(ast.rhs, param)
+        if type(ltype) in [VoidType, ArrayType] or not Checker.matchType(ltype, rtype):
+            raise TypeMismatchInStatement(ast)
+        if type(ltype) is AutoType:
+            return ExpUtils.infer(param, ast.lhs.name, rtype)
+        if type(rtype) is AutoType:
+            return ExpUtils.infer(param, ast.rhs.name, ltype)
+        return FloatType if FloatType in [type(ltype), type(rtype)] else ltype
+
+
+    # Expressions
+    def visitBinExpr(self, ast: BinExpr, param): 
         ltype = self.visit(ast.left, param)
         rtype = self.visit(ast.right, param)
         op = ast.op
         if ExpUtils.isOpForNumber(op):
             if ExpUtils.isNaN(ltype) or ExpUtils.isNaN(rtype):
                 raise TypeMismatchInExpression(ast)
-            if op in ExpUtils.isOpForInt:
+            if ExpUtils.isOpForInt(op):
                 if FloatType in [type(ltype), type(rtype)]:
                     raise TypeMismatchInExpression(ast)
                 if type(ltype) is AutoType:
@@ -239,12 +254,45 @@ class StaticChecker(Visitor):
             raise TypeMismatchInExpression(ast)
         return BooleanType()
     
-    def visitUnExpr(self, ast, param): 
+    def visitUnExpr(self, ast: UnExpr, param): 
         otype = self.visit(ast.val, param)
         op = ast.op
         if op == '-':
-            if 
+            if ExpUtils.isNaN(otype): 
+                raise TypeMismatchInExpression(ast)
+        elif op == '!':
+            if not type(otype) in [BooleanType, AutoType]:
+                raise TypeMismatchInExpression(ast)
+            if type(otype) is AutoType:
+                otype = ExpUtils.infer(param, ast.val.name, BooleanType())
+        else:
+            if type(otype) is not ArrayType:
+                raise TypeMismatchInExpression(ast)
+        return otype
         
+    def visitId(self, ast: Id, param): 
+        symbol = Checker.checkUndeclared(param, ast.name, Identifier())
+        return symbol.type
+    
+    def visitArrayCell(self, ast: ArrayCell, param): 
+        arrtype = self.visit(Id(ast.name), param)
+        exp_list = [self.visit(x, param) for x in ast.cell]
+        if False in [type(x) is IntegerType for x in exp_list]:
+            raise TypeMismatchInExpression(ast)
+        return arrtype.typ
+
+    def visitFuncCall(self, ast: FuncCall, param): 
+        symbol = self.handleCall(ast, param, Function(), 'FuncCall')
+        if type(symbol.type.rettype) is VoidType:
+            raise TypeMismatchInExpression(ast)
+        return symbol.type.rettype
+
+    def handleCall(self, ast, scope, kind, typ):
+        symbol = Checker.checkRedeclared(scope, ast.name, kind)
+        params = [self.visit(x, scope) for x in ast.cell]
+        if not Checker.checkParamType(symbol.type.partype, params):
+            raise TypeMismatchInExpression(ast) if typ == 'FuncCall' else TypeMismatchInStatement(ast)
+        return symbol
 
     # Visit literal => return corresponding type
     def visitIntegerLit(self, ast, param): 
@@ -259,3 +307,10 @@ class StaticChecker(Visitor):
     def visitStringLit(self, ast, param): 
         return StringType()
         
+    def visitArrayLit(self, ast, param):
+        exp_list = [self.visit(x, param) for x in ast.explist]
+        for i in range(len(exp_list)-1):
+            if type(exp_list[i]) is not type(exp_list[i+1]):
+                raise IllegalArrayLiteral(ast)
+        return ArrayType([len(ast.explist)], type(exp_list[0]))
+            

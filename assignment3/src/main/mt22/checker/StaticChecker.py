@@ -211,6 +211,36 @@ class StaticChecker(Visitor):
             return ExpUtils.infer(param, ast.rhs.name, ltype)
         return FloatType if FloatType in [type(ltype), type(rtype)] else ltype
 
+    def visitBlockStmt(self, ast, param): 
+        env = [[]] + param
+        for x in body:
+            env = self.visit(x, param)
+
+    def visitIfStmt(self, ast, param): 
+        condtype = self.visit(ast.cond, param)
+        if type(condtype) is not BooleanType:
+            raise TypeMismatchInStatement(ast)
+        return self.visit(ast.fstmt, param) if ast.fstmt else self.visit(ast.tstmt, param)
+
+    def visitForStmt(self, ast, param): 
+        initype = self.visit(ast.init, param)
+        condtype = self.visit(ast.cond, param)
+        uptype = self.visit(ast.upd, param)
+        if False in [x is IntegerType for x in [type(initype), type(uptype)]] or type(condtype) is not BooleanType:
+            raise TypeMismatchInStatement(ast)
+        return self.visit(ast.stmt, param)
+        
+    def visitWhileStmt(self, ast, param): 
+        condtype = self.visit(ast.cond, param)
+        if type(condtype) is not BooleanType:
+            raise TypeMismatchInStatement(ast)
+        return self.visit(ast.stmt, param)
+    
+    def visitDoWhileStmt(self, ast, param): 
+        condtype = self.visit(ast.cond, param)
+        if type(condtype) is not BooleanType:
+            raise TypeMismatchInStatement(ast)
+        return self.visit(ast.stmt, param)
 
     # Expressions
     def visitBinExpr(self, ast: BinExpr, param): 

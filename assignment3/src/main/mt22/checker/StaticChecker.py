@@ -242,6 +242,17 @@ class StaticChecker(Visitor):
             raise TypeMismatchInStatement(ast)
         return self.visit(ast.stmt, param)
 
+    def visitBreakStmt(self, ast, param): 
+        return "break"
+    
+    def visitContinueStmt(self, ast, param): 
+        return None
+    
+    def visitReturnStmt(self, ast, param): 
+        return 
+    
+    def visitCallStmt(self, ast, param): pass
+
     # Expressions
     def visitBinExpr(self, ast: BinExpr, param): 
         ltype = self.visit(ast.left, param)

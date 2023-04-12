@@ -1,0 +1,4 @@
+_ no case type cannot be 
+_ không có case hàm và biến trùng tên
+_ auto var lúc nòa cũgn sẽ đc suy diễn kiểu
+_ 

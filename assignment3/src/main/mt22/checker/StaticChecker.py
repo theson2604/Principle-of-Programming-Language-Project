@@ -135,8 +135,9 @@ class Checker:
     @staticmethod
     def handleReturnStmt(stmts):
         for i in range(0, len(stmts)-1):
-            # if Checker.isStopTypeStatement()
-            pass
+            if Checker.isStopTypeStatement(stmts[i][1]):
+                return None
+        return None if stmts == [] else stmts[-1][1]
 
     @staticmethod
     def isReturnTypeFunction(rettype):
@@ -182,10 +183,16 @@ class StaticChecker(Visitor):
             env = self.visit(decl, env)
 
     def visitVarDecl(self, ast: VarDecl, param): 
-        if type(ast.typ) is AutoType:
-            if ast.init is None:
+        if ast.init is None:
+            if type(ast.typ) is AutoType:
                 raise Invalid(Variable(), ast.name)
             ast.typ = self.visit(ast.init, param)
+        else: 
+            typ = self.visit(ast.init, param)
+            if type(ast.typ) is AutoType:
+                ast.typ = self.visit(ast.init, param)
+            elif type(ast.typ) is not type(typ):
+                raise TypeMismatchInVarDecl(ast)
         return Checker.checkRedeclared(param, [Symbol(ast.name, ast.typ, kind=Variable())])
     
     #missing inherit
@@ -206,10 +213,12 @@ class StaticChecker(Visitor):
         if type(ltype) in [VoidType, ArrayType] or not Checker.matchType(ltype, rtype):
             raise TypeMismatchInStatement(ast)
         if type(ltype) is AutoType:
-            return ExpUtils.infer(param, ast.lhs.name, rtype)
+            ExpUtils.infer(param, ast.lhs.name, rtype)
+            return
         if type(rtype) is AutoType:
-            return ExpUtils.infer(param, ast.rhs.name, ltype)
-        return FloatType if FloatType in [type(ltype), type(rtype)] else ltype
+            ExpUtils.infer(param, ast.rhs.name, ltype)
+            return
+        return
 
     def visitBlockStmt(self, ast, param): 
         env = [[]] + param
@@ -243,10 +252,11 @@ class StaticChecker(Visitor):
         return self.visit(ast.stmt, param)
 
     def visitBreakStmt(self, ast, param): 
-        return "break"
+        # if
+        return BreakStmt()
     
     def visitContinueStmt(self, ast, param): 
-        return None
+        return ContinueStmt()
     
     def visitReturnStmt(self, ast, param): 
         return 

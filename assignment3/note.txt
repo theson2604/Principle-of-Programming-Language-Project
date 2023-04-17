@@ -1,4 +1,5 @@
 _ no case type cannot be 
 _ không có case hàm và biến trùng tên
 _ auto var lúc nòa cũgn sẽ đc suy diễn kiểu
-_ 
+_ callstmt không bắt buộc là voidtype
+_ callstmt với funcall so sánh số lượng param pass vào trước, nếu không bằng raise TypeMismatch

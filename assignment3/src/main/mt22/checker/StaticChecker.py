@@ -17,6 +17,9 @@ class ExpUtils:
                     symbol.typ = typ
         return typ
     
+    def flatter(scope):
+        return list(reduce(lambda x,y: x+y, scope,[]))
+    
     @staticmethod
     def isNaN(expType):
         return type(expType) not in [IntegerType, FloatType, AutoType]
@@ -106,7 +109,7 @@ class Checker:
     
     @staticmethod
     def checkUndeclared(visibleScope, name, kind, notGlobal=False):
-        scope = visibleScope if not notGlobal else [x for x in visibleScope if not x.isGlobal]
+        scope = list(reduce(lambda x,y: x+y, visibleScope,[]))
         res = Checker.utils.lookup((name, type(kind)), scope, lambda x: x.toTuple())
         if res is None:
             raise Undeclared(kind, name)
@@ -155,34 +158,37 @@ class Checker:
         return Checker.isReturnType(rettype) or type(rettype) in [BreakStmt, ContinueStmt]
 
 class StaticChecker(Visitor):
-    # global_env = [[
-    #     Symbol('readInteger', MType([], IntegerType())),
-    #     Symbol('printInteger', MType([IntegerType()], VoidType())),
-    #     Symbol('readFloat', MType([], FloatType())),
-    #     Symbol('writeFloat', MType([FloatType()], VoidType())),
-    #     Symbol('readBoolean', MType([], BooleanType())),
-    #     Symbol('printBoolean', MType([BooleanType()], VoidType())),
-    #     Symbol('readString', MType([], StringType())),
-    #     Symbol('printString', MType([StringType()], VoidType())),
-    #     # Symbol('super', MType([IntegerType()], VoidType())),
-    # ]]
+    global_env = [
+        Symbol('readInteger', MType([], IntegerType())),
+        Symbol('printInteger', MType([IntegerType()], VoidType())),
+        Symbol('readFloat', MType([], FloatType())),
+        Symbol('writeFloat', MType([FloatType()], VoidType())),
+        Symbol('readBoolean', MType([], BooleanType())),
+        Symbol('printBoolean', MType([BooleanType()], VoidType())),
+        Symbol('readString', MType([], StringType())),
+        Symbol('printString', MType([StringType()], VoidType())),
+        # Symbol('super', MType([IntegerType()], VoidType())),
+    ]
+
+    def __init__(self, ast):
+        self.ast = ast
+
+    def check(self):
+        return self.visit(self.ast, StaticChecker.global_env)
 
     def visitProgram(self, ast: Program, param): 
-        env = [[
-            Symbol('readInteger', MType([], IntegerType())),
-            Symbol('printInteger', MType([IntegerType()], VoidType())),
-            Symbol('readFloat', MType([], FloatType())),
-            Symbol('writeFloat', MType([FloatType()], VoidType())),
-            Symbol('readBoolean', MType([], BooleanType())),
-            Symbol('printBoolean', MType([BooleanType()], VoidType())),
-            Symbol('readString', MType([], StringType())),
-            Symbol('printString', MType([StringType()], VoidType())),
-            # Symbol('super', MType([IntegerType()], VoidType())),
-        ]]
+        funcdecls = [Symbol.fromDecl(x) for x in ast.decl if type(x) is FuncDecl]
+        # symbols = [Symbol.fromDecl(x) for x in ast.decl]
+        entryPoint = Symbol('main', MType([], VoidType()), kind=Function())
+        res = Checker.utils.lookup(entryPoint.toTuple, funcdecls, lambda x: x.toTuple())
+        if res is None: raise NoEntryPoint()
+        func_list = param + [entryPoint] + funcdecls
+        env = [[]]
         for decl in ast.decls:
-            env = self.visit(decl, env)
+            env = self.visit(decl, (env, func_list))
 
     def visitVarDecl(self, ast: VarDecl, param): 
+        env = param[0]
         if ast.init is None:
             if type(ast.typ) is AutoType:
                 raise Invalid(Variable(), ast.name)
@@ -193,20 +199,30 @@ class StaticChecker(Visitor):
                 ast.typ = self.visit(ast.init, param)
             elif type(ast.typ) is not type(typ):
                 raise TypeMismatchInVarDecl(ast)
-        return Checker.checkRedeclared(param, [Symbol(ast.name, ast.typ, kind=Variable())])
+        return Checker.checkRedeclared(env, [Symbol(ast.name, ast.typ, kind=Variable())])
     
-    #missing inherit
+    #inherit processing
     def visitFuncDecl(self, ast: FuncDecl, param): 
+        env, func_list = param
         params_list = [self.visit(x, scope).toParam() for x in ast.params]
-        env = [[params_list]] + param
-        for x in self.visit(ast.body, env):
-            env = self.visit(x, env)
-        return [[Symbol(ast.name, MType(params_list, ast.return_type))]] + param
+        env = [[params_list]] + env
+        if ast.inherit:
+            inherit = Checker.checkUndeclared(env+[func_list], ast.inherit, Function())
+            for i in range(len(ast.body)):
+                if i == 0: 
+                    if len(inherit.type.partype) != 0 and (type(ast.body[0]) is not CallStmt or not ast.body[0].name in ['super', 'preventDefault']):
+                        raise InvalidStatementInFunction(ast.name)
+                    # first_stmt = self.visit(ast.body[i], (env, func_list))
+                env = self.visit(ast.body[i], (env, func_list))
+        else:
+            for x in ast.body:
+                env = self.visit(x, (env, func_list))
+        return [[Symbol(ast.name, MType(params_list, ast.return_type))]] + param[0]
 
     def visitParamDecl(self, ast: ParamDecl, param): 
         return Symbol(ast.name, ast.typ, inherit=True) if ast.inherit else Symbol(ast.name, ast.typ)
 
-    #Statements
+    #Statementssw
     def visitAssignStmt(self, ast, param): 
         ltype = self.visit(ast.lhs, param)
         rtype = self.visit(ast.rhs, param)
@@ -222,9 +238,10 @@ class StaticChecker(Visitor):
 
     def visitBlockStmt(self, ast, param): 
         env = [[]] + param
-        for x in body:
+        for x in ast.body:
             env = self.visit(x, param)
 
+    
     def visitIfStmt(self, ast, param): 
         condtype = self.visit(ast.cond, param)
         if type(condtype) is not BooleanType:
@@ -339,7 +356,7 @@ class StaticChecker(Visitor):
         return symbol.type.rettype
 
     def handleCall(self, ast, scope, kind, typ):
-        symbol = Checker.checkRedeclared(scope, ast.name, kind)
+        symbol = Checker.checkUndeclared(scope, ast.name, kind)
         params = [self.visit(x, scope) for x in ast.cell]
         if not Checker.checkParamType(symbol.type.partype, params):
             raise TypeMismatchInExpression(ast) if typ == 'FuncCall' else TypeMismatchInStatement(ast)

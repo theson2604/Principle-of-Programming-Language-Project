@@ -5,4 +5,7 @@ def flat(param):
     print(a,b,c,d)
 
 
-flat((1,2,3))
+b = [1,2,3]
+a = [[12,3], [2,3,3]]
+a[0] = b + a[0]
+print(a)

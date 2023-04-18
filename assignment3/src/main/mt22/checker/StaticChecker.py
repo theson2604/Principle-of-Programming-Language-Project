@@ -204,19 +204,23 @@ class StaticChecker(Visitor):
     #inherit processing
     def visitFuncDecl(self, ast: FuncDecl, param): 
         env, func_list = param
-        params_list = [self.visit(x, scope).toParam() for x in ast.params]
-        env = [[params_list]] + env
+        params_list = [self.visit(x, env).toParam() for x in ast.params]
+        env = [params_list] + env
+        inherit_list = []
         if ast.inherit:
             inherit = Checker.checkUndeclared(env+[func_list], ast.inherit, Function())
-            for i in range(len(ast.body)):
-                if i == 0: 
-                    if len(inherit.type.partype) != 0 and (type(ast.body[0]) is not CallStmt or not ast.body[0].name in ['super', 'preventDefault']):
-                        raise InvalidStatementInFunction(ast.name)
-                    # first_stmt = self.visit(ast.body[i], (env, func_list))
-                env = self.visit(ast.body[i], (env, func_list))
-        else:
-            for x in ast.body:
-                env = self.visit(x, (env, func_list))
+            if len(inherit.type.partype) != 0 and (type(ast.body.body[0]) is not CallStmt or not ast.body.body[0].name in ['super', 'preventDefault']):
+                raise InvalidStatementInFunction(ast.name)
+            #take inherited params from parent function
+            for symbol in inherit.type.partype:
+                if symbol.inherit:
+                    inherit_list += symbol
+        env[0] = inherit_list + env[0]
+        for i in range(1 if ast.inherit else 0, len(ast.body.body)):
+            if type(ast.body.body[i]) is Stmt:
+                self.visit(ast.body.body[i], (env, func_list, ast.return_type, False)) #pass another param in visit
+            else:
+                env = self.visit(ast.body.body[i], (env, func_list))
         return [[Symbol(ast.name, MType(params_list, ast.return_type))]] + param[0]
 
     def visitParamDecl(self, ast: ParamDecl, param): 
@@ -224,66 +228,106 @@ class StaticChecker(Visitor):
 
     #Statementssw
     def visitAssignStmt(self, ast, param): 
-        ltype = self.visit(ast.lhs, param)
-        rtype = self.visit(ast.rhs, param)
+        scope, func_list, rettype, inloop = param
+        ltype = self.visit(ast.lhs, (scope, func_list))
+        rtype = self.visit(ast.rhs, (scope, func_list))
         if type(ltype) in [VoidType, ArrayType] or not Checker.matchType(ltype, rtype):
             raise TypeMismatchInStatement(ast)
         if type(ltype) is AutoType:
-            ExpUtils.infer(param, ast.lhs.name, rtype)
+            ExpUtils.infer(scope, ast.lhs.name, rtype)
             return
         if type(rtype) is AutoType:
-            ExpUtils.infer(param, ast.rhs.name, ltype)
+            ExpUtils.infer(scope, ast.rhs.name, ltype)
             return
         return
 
     def visitBlockStmt(self, ast, param): 
-        env = [[]] + param
+        scope, func_list, rettype, inloop = param
+        env = [[]] + scope
         for x in ast.body:
-            env = self.visit(x, param)
+            if type(x) is Stmt:
+                self.visit(x, (env, func_list, rettype, inloop)) #pass another param in visit
+            else:
+                env = self.visit(x, (env, func_list))
 
     
     def visitIfStmt(self, ast, param): 
-        condtype = self.visit(ast.cond, param)
+        scope, func_list, rettype, inloop = param
+        condtype = self.visit(ast.cond, (scope, func_list))
         if type(condtype) is not BooleanType:
             raise TypeMismatchInStatement(ast)
-        return self.visit(ast.fstmt, param) if ast.fstmt else self.visit(ast.tstmt, param)
+        self.visit(ast.tstmt, param)
+        if ast.fstmt: 
+            self.visit(ast.fstmt, param) 
+        return
 
     def visitForStmt(self, ast, param): 
-        initype = self.visit(ast.init, param)
-        condtype = self.visit(ast.cond, param)
-        uptype = self.visit(ast.upd, param)
+        scope, func_list, rettype, inloop = param
+        initype = self.visit(ast.init, (scope, func_list))
+        condtype = self.visit(ast.cond, (scope, func_list))
+        uptype = self.visit(ast.upd, (scope, func_list))
         if False in [x is IntegerType for x in [type(initype), type(uptype)]] or type(condtype) is not BooleanType:
             raise TypeMismatchInStatement(ast)
-        return self.visit(ast.stmt, param)
+        self.visit(ast.stmt, (scope, func_list, rettype, True))
+        return
         
     def visitWhileStmt(self, ast, param): 
-        condtype = self.visit(ast.cond, param)
+        scope, func_list, rettype, inloop = param
+        condtype = self.visit(ast.cond, (scope, func_list))
         if type(condtype) is not BooleanType:
             raise TypeMismatchInStatement(ast)
-        return self.visit(ast.stmt, param)
-    
-    def visitDoWhileStmt(self, ast, param): 
-        condtype = self.visit(ast.cond, param)
-        if type(condtype) is not BooleanType:
-            raise TypeMismatchInStatement(ast)
-        return self.visit(ast.stmt, param)
-
-    def visitBreakStmt(self, ast, param): 
-        # if
-        return BreakStmt()
-    
-    def visitContinueStmt(self, ast, param): 
-        return ContinueStmt()
-    
-    def visitReturnStmt(self, ast, param): 
+        self.visit(ast.stmt, (scope, func_list, rettype, True))
         return 
     
-    def visitCallStmt(self, ast, param): pass
+    def visitDoWhileStmt(self, ast, param): 
+        scope, func_list, rettype, inloop = param
+        self.visit(ast.stmt, (scope, func_list, rettype, True))
+        condtype = self.visit(ast.cond, (scope, func_list))
+        if type(condtype) is not BooleanType:
+            raise TypeMismatchInStatement(ast)
+        return
+
+    def visitBreakStmt(self, ast, param): 
+        if not param[3]:
+            raise MustInLoop(ast)
+        return
+    
+    def visitContinueStmt(self, ast, param): 
+        if not param[3]:
+            raise MustInLoop(ast)
+        return 
+    
+    def visitReturnStmt(self, ast, param): 
+        scope, func_list, rettype, inloop = param
+        if not ast.expr and type(rettype) is not VoidType:
+            raise TypeMismatchInStatement(ast)
+        ret = self.visit(ast.expr, (scope, func_list))
+        if type(ret) is not type(rettype):
+            raise TypeMismatchInStatement(ast)
+        return 
+    
+    def visitCallStmt(self, ast, param): 
+        scope, func_list, rettype, inloop = param
+        symbol = Checker.checkUndeclared(scope+[func_list], ast.name, Function())
+        if len(ast.args) != len(symbol.type.partype):
+            raise TypeMismatchInStatement(ast)
+        for i in range(len(ast.args)):
+            para = self.visit(ast.args[i], (scope, func_list))
+            if type(para) is not type(symbol.type.partype[i].type):
+                raise TypeMismatchInStatement(ast)
+        # return
+        symbol = self.handleCall(ast, scope+[func_list], Function(), 'CallStmt')
+        if type(symbol.type.rettype) is VoidType:
+            raise TypeMismatchInExpression(ast)
+        return symbol.type.rettype
+    
 
     # Expressions
     def visitBinExpr(self, ast: BinExpr, param): 
-        ltype = self.visit(ast.left, param)
-        rtype = self.visit(ast.right, param)
+        scope, func_list = param
+        env = scope + [func_list]
+        ltype = self.visit(ast.left, env)
+        rtype = self.visit(ast.right, env)
         op = ast.op
         if ExpUtils.isOpForNumber(op):
             if ExpUtils.isNaN(ltype) or ExpUtils.isNaN(rtype):
@@ -292,38 +336,40 @@ class StaticChecker(Visitor):
                 if FloatType in [type(ltype), type(rtype)]:
                     raise TypeMismatchInExpression(ast)
                 if type(ltype) is AutoType:
-                    ExpUtils.infer(param, ast.left.name, IntegerType())
+                    ExpUtils.infer(env, ast.left.name, IntegerType())
                 if type(rtype) is AutoType:
-                    ExpUtils.infer(param, ast.right.name, IntegerType())
+                    ExpUtils.infer(env, ast.right.name, IntegerType())
                 if op == '%': 
                     return IntegerType()
                 return BooleanType()
             if type(ltype) is AutoType():
-                ltype = ExpUtils.infer(param, ast.left.name, rtype)
+                ltype = ExpUtils.infer(env, ast.left.name, rtype)
             if type(rtype) is AutoType():
-                rtype = ExpUtils.infer(param, ast.right.name, ltype)
+                rtype = ExpUtils.infer(env, ast.right.name, ltype)
             if op in ['+','-','*']: 
                 return ExpUtils.mergeNumType(ltype, rtype)
             if op == '/': return FloatType()
             return BooleanType()
         if op == '::':
             if type(ltype) is AutoType():
-                ltype = ExpUtils.infer(param, ast.left.name, StringType())
+                ltype = ExpUtils.infer(env, ast.left.name, StringType())
             if type(rtype) is AutoType():
-                rtype = ExpUtils.infer(param, ast.right.name, StringType())
+                rtype = ExpUtils.infer(env, ast.right.name, StringType())
             if False in [type(x) is StringType for x in [ltype, rtype]]:
                 raise TypeMismatchInExpression(ast)
             return StringType()
         if type(ltype) is AutoType():
-                ltype = ExpUtils.infer(param, ast.left.name, BooleanType())
+                ltype = ExpUtils.infer(env, ast.left.name, BooleanType())
         if type(rtype) is AutoType():
-            rtype = ExpUtils.infer(param, ast.right.name, BooleanType())
+            rtype = ExpUtils.infer(env, ast.right.name, BooleanType())
         if False in [type(x) is BooleanType for x in [ltype, rtype]]:
             raise TypeMismatchInExpression(ast)
         return BooleanType()
     
     def visitUnExpr(self, ast: UnExpr, param): 
-        otype = self.visit(ast.val, param)
+        scope, func_list = param
+        env = scope + [func_list]
+        otype = self.visit(ast.val, env)
         op = ast.op
         if op == '-':
             if ExpUtils.isNaN(otype): 
@@ -332,14 +378,14 @@ class StaticChecker(Visitor):
             if not type(otype) in [BooleanType, AutoType]:
                 raise TypeMismatchInExpression(ast)
             if type(otype) is AutoType:
-                otype = ExpUtils.infer(param, ast.val.name, BooleanType())
+                otype = ExpUtils.infer(env, ast.val.name, BooleanType())
         else:
             if type(otype) is not ArrayType:
                 raise TypeMismatchInExpression(ast)
         return otype
         
     def visitId(self, ast: Id, param): 
-        symbol = Checker.checkUndeclared(param, ast.name, Identifier())
+        symbol = Checker.checkUndeclared(param[0], ast.name, Identifier())
         return symbol.type
     
     def visitArrayCell(self, ast: ArrayCell, param): 
@@ -350,7 +396,8 @@ class StaticChecker(Visitor):
         return arrtype.typ
 
     def visitFuncCall(self, ast: FuncCall, param): 
-        symbol = self.handleCall(ast, param, Function(), 'FuncCall')
+        scope, func_list = param
+        symbol = self.handleCall(ast, scope+[func_list], Function(), 'FuncCall')
         if type(symbol.type.rettype) is VoidType:
             raise TypeMismatchInExpression(ast)
         return symbol.type.rettype

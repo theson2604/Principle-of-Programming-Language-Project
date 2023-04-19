@@ -100,8 +100,8 @@ class Checker:
     @staticmethod
     def checkRedeclared(curScope, symbol):
         # print(curScope)
-        if len(curScope) != 0:
-            f = Checker.utils.lookup(symbol.name, curScope, Symbol.cmp)
+        if len(curScope[0]) != 0:
+            f = Checker.utils.lookup(symbol.name, curScope[0], Symbol.cmp)
             if f is not None:
                 raise Redeclared(symbol.kind, symbol.name)
             # newScope.append(symbol)
@@ -218,6 +218,7 @@ class StaticChecker(Visitor):
             for symbol in inherit.type.partype:
                 if symbol.inherit:
                     inherit_list += symbol
+            self.handleSuper(ast.body.body[0], inherit_list, (env, func_list))
         env[0] = inherit_list + env[0]
         for i in range(1 if ast.inherit else 0, len(ast.body.body)):
             if type(ast.body.body[i]) is Stmt:
@@ -411,6 +412,17 @@ class StaticChecker(Visitor):
         if not Checker.checkParamType(symbol.type.partype, params):
             raise TypeMismatchInExpression(ast) if typ == 'FuncCall' else TypeMismatchInStatement(ast)
         return symbol
+
+    # param is list of inherited params from parent func
+    def handleSuper(self, ast, param, params):
+        if len(ast.agrs) > len(param):
+            raise TypeMismatchInExpression(ast.agrs[len(param)])
+        if len(ast.agrs) < len(param):
+            raise TypeMismatchInExpression()
+        for i in range(len(ast.args)):
+            symbol = self.visit(ast.args[i], params)
+            if type(symbol) is not type(param[i].type):
+                raise TypeMismatchInExpression(ast.args[i])
 
     # Visit literal => return corresponding type
     def visitIntegerLit(self, ast, param): 

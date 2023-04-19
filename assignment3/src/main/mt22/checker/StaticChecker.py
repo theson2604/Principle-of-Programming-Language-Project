@@ -98,14 +98,15 @@ class Checker:
     utils = Utils()
 
     @staticmethod
-    def checkRedeclared(curScope, symbol_list):
-        newScope = curScope.copy()
-        for x in symbol_list:
-            f = Checker.utils.lookup(x.name, newScope, Symbol.cmp)
+    def checkRedeclared(curScope, symbol):
+        # print(curScope)
+        if len(curScope) != 0:
+            f = Checker.utils.lookup(symbol.name, curScope, Symbol.cmp)
             if f is not None:
-                raise Redeclared(x.kind, x.name)
-            newScope.append(x)
-        return newScope
+                raise Redeclared(symbol.kind, symbol.name)
+            # newScope.append(symbol)
+        curScope[0] = [symbol] + curScope[0]
+        return curScope
     
     @staticmethod
     def checkUndeclared(visibleScope, name, kind, notGlobal=False):
@@ -174,32 +175,34 @@ class StaticChecker(Visitor):
         self.ast = ast
 
     def check(self):
-        return self.visit(self.ast, StaticChecker.global_env)
+        return self.visitProgram(self.ast, StaticChecker.global_env)
 
     def visitProgram(self, ast: Program, param): 
-        funcdecls = [Symbol.fromDecl(x) for x in ast.decl if type(x) is FuncDecl]
+        funcdecls = [Symbol.fromDecl(x) for x in ast.decls if type(x) is FuncDecl]
         # symbols = [Symbol.fromDecl(x) for x in ast.decl]
+        # entryPoint = Symbol('main', MType([], VoidType()), kind=Function())
+        # res = Checker.utils.lookup(entryPoint.toTuple, funcdecls, lambda x: x.toTuple())
+        # if len(funcdecls) == 0 or res is None: raise NoEntryPoint()
         entryPoint = Symbol('main', MType([], VoidType()), kind=Function())
-        res = Checker.utils.lookup(entryPoint.toTuple, funcdecls, lambda x: x.toTuple())
-        if res is None: raise NoEntryPoint()
         func_list = param + [entryPoint] + funcdecls
         env = [[]]
         for decl in ast.decls:
             env = self.visit(decl, (env, func_list))
+        res = Checker.utils.lookup(entryPoint.toTuple, funcdecls, lambda x: x.toTuple())
+        if res is None: raise NoEntryPoint()
 
     def visitVarDecl(self, ast: VarDecl, param): 
         env = param[0]
-        if ast.init is None:
+        if ast.init is None:    
             if type(ast.typ) is AutoType:
                 raise Invalid(Variable(), ast.name)
-            ast.typ = self.visit(ast.init, param)
         else: 
             typ = self.visit(ast.init, param)
             if type(ast.typ) is AutoType:
                 ast.typ = self.visit(ast.init, param)
             elif type(ast.typ) is not type(typ):
                 raise TypeMismatchInVarDecl(ast)
-        return Checker.checkRedeclared(env, [Symbol(ast.name, ast.typ, kind=Variable())])
+        return Checker.checkRedeclared(env, Symbol(ast.name, ast.typ, kind=Variable()))
     
     #inherit processing
     def visitFuncDecl(self, ast: FuncDecl, param): 

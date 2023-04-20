@@ -14,7 +14,10 @@ class ExpUtils:
         for symbol_list in env:
             for symbol in symbol_list:
                 if symbol.name == name:
-                    symbol.typ = typ
+                    if type(symbol.kind) is Function:
+                        symbol.type.rettype = typ
+                    else:    
+                        symbol.typ = typ
         return typ
     
     def flatter(scope):
@@ -70,10 +73,6 @@ class Symbol:
         self.kind = Variable()
         return self
     
-    def toGlobal(self):
-        self.isGlobal = True
-        return self
-    
     @staticmethod
     def cmp(symbol):
         return symbol.name
@@ -86,7 +85,7 @@ class Symbol:
     
     @staticmethod
     def fromFuncDecl(decl):
-        paramsType = [x.typ for x in decl.params]
+        paramsType = [Symbol(x.name, x.typ, inherit=True, kind=Parameter()) if x.inherit else Symbol(x.name, x.typ, kind=Parameter()) for x in decl.params]
         return Symbol(decl.name, MType(paramsType, decl.return_type), kind=Function())
     
     @staticmethod
@@ -107,19 +106,18 @@ class Checker:
 
     @staticmethod
     def checkRedeclared(curScope, symbol):
-        # print(curScope)
         if len(curScope[0]) != 0:
             f = Checker.utils.lookup(symbol.name, curScope[0], Symbol.cmp)
             if f is not None:
                 raise Redeclared(symbol.kind, symbol.name)
             # newScope.append(symbol)
-        curScope[0] = [symbol] + curScope[0]
+        curScope[0] += [symbol]
         return curScope
     
     @staticmethod
     def checkUndeclared(visibleScope, name, kind):
-        scope = list(reduce(lambda x,y: x+y, visibleScope,[]))
-        # print(scope, name)
+        scope = list(reduce(lambda x,y: x+y if type(y) is list else x, visibleScope,[]))
+        if scope == []: scope = visibleScope
         res = Checker.utils.lookup((name, type(kind)), scope, lambda x: x.toTuple())
         if res is None:
             raise Undeclared(kind, name)
@@ -136,7 +134,7 @@ class Checker:
             return Checker.matchArrayType(patternType, paramType)
 
         if AutoType in [type(patternType), type(paramType)]: return True
-        if type(patternType) == type(paramType): return True
+        if type(patternType) is type(paramType): return True
         if type(patternType) is FloatType and type(paramType) is IntegerType: return True
         return False
 
@@ -218,7 +216,9 @@ class StaticChecker(Visitor):
     #inherit processing
     def visitFuncDecl(self, ast: FuncDecl, param): 
         env, func_list = param
-        params_list = [self.visit(x, env).toParam() for x in ast.params]
+        params_list = []
+        for x in ast.params:
+            params_list = self.visit(x, params_list)
         env = [params_list] + env
         inherit_list = []
         if ast.inherit:
@@ -236,10 +236,12 @@ class StaticChecker(Visitor):
                 self.visit(ast.body.body[i], (env, func_list, ast.return_type, False)) #pass another param in visit
             else:
                 env = self.visit(ast.body.body[i], (env, func_list))
-        return [[Symbol(ast.name, MType(params_list, ast.return_type))]] + param[0]
+        return Checker.checkRedeclared(param[0], Symbol(ast.name, MType(params_list, ast.return_type)))
 
-    def visitParamDecl(self, ast: ParamDecl, param): 
-        return Symbol(ast.name, ast.typ, inherit=True) if ast.inherit else Symbol(ast.name, ast.typ)
+    def visitParamDecl(self, ast: ParamDecl, param):
+        symbol = Symbol(ast.name, ast.typ, inherit=True, kind=Parameter()) if ast.inherit else Symbol(ast.name, ast.typ, kind=Parameter())
+        param = Checker.checkRedeclared([param], symbol)
+        return param[0]
 
     #Statementssw
     def visitAssignStmt(self, ast, param): 
@@ -259,7 +261,6 @@ class StaticChecker(Visitor):
     def visitBlockStmt(self, ast, param): 
         scope, func_list, rettype, inloop = param
         env = [[]] + scope
-        self.checkScope(env)
         for x in ast.body:
             if ExpUtils.isStmt(x):
                 self.visit(x, (env, func_list, rettype, inloop)) #pass another param in visit
@@ -330,8 +331,12 @@ class StaticChecker(Visitor):
             raise TypeMismatchInStatement(ast)
         for i in range(len(ast.args)):
             para = self.visit(ast.args[i], (scope, func_list))
-            if type(para) is not type(symbol.type.partype[i].type):
+            if not Checker.matchType(symbol.type.partype[i].type, para):
                 raise TypeMismatchInStatement(ast)
+            if type(symbol.type.partype[i].type) is AutoType:
+                ExpUtils.infer([symbol.type.partype], symbol.type.partype[i].name, para)
+            if type(para) is AutoType:
+                ExpUtils.infer(scope+[func_list], ast.args[i].name, symbol.type.partype[i].type)
         # return
         # symbol = self.handleCall(ast, scope+[func_list], Function(), 'CallStmt')
         # if type(symbol.type.rettype) is VoidType:
@@ -412,15 +417,17 @@ class StaticChecker(Visitor):
 
     def visitFuncCall(self, ast: FuncCall, param): 
         scope, func_list = param
-        symbol = self.handleCall(ast, scope+[func_list], Function(), 'FuncCall')
+        symbol = self.handleCall(ast, (scope,func_list), Function(), 'FuncCall')
         if type(symbol.type.rettype) is VoidType:
             raise TypeMismatchInExpression(ast)
         return symbol.type.rettype
 
     def handleCall(self, ast, scope, kind, typ):
-        symbol = Checker.checkUndeclared(scope, ast.name, kind)
-        params = [self.visit(x, scope) for x in ast.cell]
-        if not Checker.checkParamType(symbol.type.partype, params):
+        env, func_list = scope
+        symbol = Checker.checkUndeclared(env+[func_list], ast.name, kind)
+        params = [self.visit(x, (env, func_list)) for x in ast.args]
+        args = [x.type for x in symbol.type.partype]
+        if not Checker.checkParamType(args, params):
             raise TypeMismatchInExpression(ast) if typ == 'FuncCall' else TypeMismatchInStatement(ast)
         return symbol
 
@@ -434,6 +441,7 @@ class StaticChecker(Visitor):
             symbol = self.visit(ast.args[i], params)
             if type(symbol) is not type(param[i].type):
                 raise TypeMismatchInExpression(ast.args[i])
+        return
             
     def checkScope(self, env):
         for symbol_list in env:

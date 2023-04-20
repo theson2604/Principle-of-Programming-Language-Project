@@ -1,0 +1,14 @@
+
+        var, b: auto = false, true;
+        a: float = 3.0;
+        arr: array [3] of integer;
+        test: function boolean(inherit a: float, b: auto, var: array [3] of float) {
+            return true;
+            printInteger(123);
+            w: integer = 123;
+            func(b, "123");
+            b = true;
+}
+        func: function array [3] of integer(f: boolean, y: string) {
+        return {1,2,3};
+        }

@@ -1,0 +1,9 @@
+
+        var, b: auto = false, true;
+        a: float = 3.0;
+        test: function boolean(inherit a: float, b: boolean, var: array [3] of float, a: string) {
+            var: integer;
+            return true;
+            printInteger(123);
+            a: integer = 123;
+}

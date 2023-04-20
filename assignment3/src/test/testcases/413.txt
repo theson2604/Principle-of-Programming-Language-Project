@@ -1,0 +1,12 @@
+
+        var, b: auto = false, true;
+        a: integer = 3;
+        arr: array [3] of integer;
+        test: function boolean(inherit a: float, b: boolean, var: array [3] of float) {
+            return true;
+            printInteger(123);
+            test: integer = 123;
+}
+        b: function array [3] of integer() {
+            return arr;
+        }

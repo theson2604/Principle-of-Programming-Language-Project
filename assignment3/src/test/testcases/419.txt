@@ -1,0 +1,16 @@
+
+        var, b: auto = false, true;
+        a: float = 3.0;
+        i: integer;
+        test: function auto(inherit a: float) {
+            for (i=1, i<10, i+1) {
+                while (flag == var) {
+                    printInteger(i);
+                }
+            }
+}
+        func: function array [3] of integer(f: boolean, y: float) {
+            var = test(a);
+            return {1,2,3};
+            b = test(a);
+        }

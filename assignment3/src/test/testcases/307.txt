@@ -1,0 +1,9 @@
+var, b: boolean = false, true;
+        a: float = 3.0;
+        test: function boolean(a: float, b: boolean) {
+test(a, b);
+return true;
+}
+    main: function void() {
+        printBoolean(var);
+    }

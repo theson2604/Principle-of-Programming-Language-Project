@@ -79,9 +79,15 @@ a, B, c: array [5,1000] of boolean ;
         self.assertTrue(TestAST.test(input,expect,306))
         
     def test_7(self):
-        input = r"""main: function integer() {
-                    while(1) continue;
-                   }"""
+        input = r"""var, b: boolean = false, true;
+        a: float = 3.0;
+        test: function boolean(a: float, b: boolean) {
+test(a, b);
+return true;
+}
+    main: function void() {
+        printBoolean(var);
+    }"""
         expect = """Program([
 	FuncDecl(main, IntegerType, [], None, BlockStmt([WhileStmt(IntegerLit(1), ContinueStmt())]))
 ])"""
@@ -779,3 +785,5 @@ abc: function integer (x: float, y:float)
 	FuncDecl(main, IntegerType, [], None, BlockStmt([IfStmt(Id(a), IfStmt(Id(b), IfStmt(Id(c), IfStmt(Id(d), AssignStmt(Id(b), Id(c)), AssignStmt(Id(a), Id(c))), AssignStmt(Id(d), Id(f))), ReturnStmt(IntegerLit(0)))), ReturnStmt(IntegerLit(0))]))
 ])"""
         self.assertTrue(TestAST.test(input,expect,352))
+
+    

@@ -1,0 +1,12 @@
+
+        var, b: auto = false, true;
+        a: float = 3.0;
+        arr: array [3] of integer;
+        test: function auto(inherit a: float) {
+            func(true, "aaaa");
+}
+        func: function array [3] of integer(f: boolean, y: string) {
+            var = test(a);
+            return {1,2,3};
+            b = test(a);
+        }

@@ -2,9 +2,6 @@
         var, b: auto = false, true;
         a: float = 3.0;
         test: function boolean(inherit a: float, b: boolean) {
+        b: integer = 999;
 return true;
 }
-    main: function void() {
-        printBoolean(var);
-        test(a, b);
-    }

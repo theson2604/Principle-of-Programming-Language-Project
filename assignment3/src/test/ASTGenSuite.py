@@ -49,12 +49,17 @@ class ASTGenSuite(unittest.TestCase):
 ])"""
         self.assertTrue(TestAST.test(input, expect, 304))
 
-    def test4(self):
-        """More complex program"""
-        input = """main: function void () {
-            printInteger(4);
-        }"""
+    def test_7(self):
+        input = r"""var, b: boolean = false, true;
+        a: float = 3.0;
+        test: function boolean(a: float, b: boolean) {
+test(a, b);
+return true;
+}
+    main: function void() {
+        printBoolean(var);
+    }"""
         expect = """Program([
-	FuncDecl(main, VoidType, [], None, BlockStmt([]))
+	FuncDecl(main, IntegerType, [], None, BlockStmt([WhileStmt(IntegerLit(1), ContinueStmt())]))
 ])"""
-        self.assertTrue(TestAST.test(input, expect, 304))
+        self.assertTrue(TestAST.test(input,expect,307))

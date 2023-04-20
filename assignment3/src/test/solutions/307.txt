@@ -1,0 +1,7 @@
+Program([
+	VarDecl(var, BooleanType, BooleanLit(False))
+	VarDecl(b, BooleanType, BooleanLit(True))
+	VarDecl(a, FloatType, FloatLit(3.0))
+	FuncDecl(test, BooleanType, [Param(a, FloatType), Param(b, BooleanType)], None, BlockStmt([CallStmt(test, Id(a), Id(b)), ReturnStmt(BooleanLit(True))]))
+	FuncDecl(main, VoidType, [], None, BlockStmt([CallStmt(printBoolean, Id(var))]))
+])

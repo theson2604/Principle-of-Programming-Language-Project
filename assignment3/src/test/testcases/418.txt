@@ -1,0 +1,14 @@
+
+        var, b: auto = false, true;
+        a: float = 3.0;
+        arr: array [3] of integer;
+        test: function auto(inherit a: float) {
+            for (aw=1, a<10, a+1) {
+                printInteger(a);
+            }
+}
+        func: function array [3] of integer(f: boolean, y: float) {
+            var = test(a);
+            return {1,2,3};
+            b = test(a);
+        }

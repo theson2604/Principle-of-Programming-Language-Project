@@ -25,3 +25,8 @@ class LexerSuite(unittest.TestCase):
         """test string literal"""
         self.assertTrue(TestLexer.test(""" "He asked me: \\"Where is John?\\"" """,
                         """He asked me: \\"Where is John?\\",<EOF>""", 104))
+        
+    def test_arraylit(self):
+        """test string literal"""
+        self.assertTrue(TestLexer.test("""[1,2,3]""",
+                        """[1,2,3],<EOF>""", 105))

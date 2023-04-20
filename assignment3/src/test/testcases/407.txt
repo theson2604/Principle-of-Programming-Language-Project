@@ -1,0 +1,6 @@
+main: function void() {
+                    while(true) {
+                        a: boolean = false;
+                        c: float = 2.333333;
+                        continue;}
+                   }

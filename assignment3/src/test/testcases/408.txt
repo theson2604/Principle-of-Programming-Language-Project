@@ -1,0 +1,11 @@
+test: function boolean() {
+        a: array[23,5,3] of integer;
+        b: boolean;
+        while(true) {
+            test();
+            break;}
+        return b;
+}
+        main: function void() {
+            a: integer = 3;
+        }

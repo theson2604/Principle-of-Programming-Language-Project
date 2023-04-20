@@ -13,6 +13,8 @@ from MT22Parser import MT22Parser
 from ASTGeneration import ASTGeneration
 from lexererr import *
 import subprocess
+from StaticError import *
+from StaticChecker import StaticChecker
 
 JASMIN_JAR = "./external/jasmin.jar"
 TEST_DIR = "./test/testcases/"

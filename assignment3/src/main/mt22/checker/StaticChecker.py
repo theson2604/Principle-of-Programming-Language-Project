@@ -25,6 +25,10 @@ class ExpUtils:
         return type(expType) not in [IntegerType, FloatType, AutoType]
     
     @staticmethod
+    def isStmt(expType):
+        return type(expType) in [AssignStmt, BlockStmt, IfStmt, ForStmt, WhileStmt, DoWhileStmt, BreakStmt, ContinueStmt, ReturnStmt, CallStmt]
+    
+    @staticmethod
     def isOpForNumber(op):
         return op in ['+', '-', '*', '/', '%', '!=', '==', '>', '<', '>=', '<=']
 
@@ -53,6 +57,10 @@ class Symbol:
 
     def toTuple(self):
         return (self.name, type(self.getKind()))
+    
+    def toString(self):
+        tmp = str(self.name)+str(self.kind)
+        return tmp
 
     def toParam(self):
         self.kind = Parameter()
@@ -109,8 +117,9 @@ class Checker:
         return curScope
     
     @staticmethod
-    def checkUndeclared(visibleScope, name, kind, notGlobal=False):
+    def checkUndeclared(visibleScope, name, kind):
         scope = list(reduce(lambda x,y: x+y, visibleScope,[]))
+        # print(scope, name)
         res = Checker.utils.lookup((name, type(kind)), scope, lambda x: x.toTuple())
         if res is None:
             raise Undeclared(kind, name)
@@ -161,13 +170,13 @@ class Checker:
 class StaticChecker(Visitor):
     global_env = [
         Symbol('readInteger', MType([], IntegerType())),
-        Symbol('printInteger', MType([IntegerType()], VoidType())),
+        Symbol('printInteger', MType([Symbol('',IntegerType(),kind=Parameter())], VoidType())),
         Symbol('readFloat', MType([], FloatType())),
-        Symbol('writeFloat', MType([FloatType()], VoidType())),
+        Symbol('writeFloat', MType([Symbol('',FloatType(),kind=Parameter())], VoidType())),
         Symbol('readBoolean', MType([], BooleanType())),
-        Symbol('printBoolean', MType([BooleanType()], VoidType())),
+        Symbol('printBoolean', MType([Symbol('',BooleanType(),kind=Parameter())], VoidType())),
         Symbol('readString', MType([], StringType())),
-        Symbol('printString', MType([StringType()], VoidType())),
+        Symbol('printString', MType([Symbol('',StringType(),kind=Parameter())], VoidType())),
         # Symbol('super', MType([IntegerType()], VoidType())),
     ]
 
@@ -188,8 +197,9 @@ class StaticChecker(Visitor):
         env = [[]]
         for decl in ast.decls:
             env = self.visit(decl, (env, func_list))
-        res = Checker.utils.lookup(entryPoint.toTuple, funcdecls, lambda x: x.toTuple())
+        res = Checker.utils.lookup(entryPoint.toString(), funcdecls, lambda x: x.toString())
         if res is None: raise NoEntryPoint()
+        return []
 
     def visitVarDecl(self, ast: VarDecl, param): 
         env = param[0]
@@ -203,6 +213,7 @@ class StaticChecker(Visitor):
             elif type(ast.typ) is not type(typ):
                 raise TypeMismatchInVarDecl(ast)
         return Checker.checkRedeclared(env, Symbol(ast.name, ast.typ, kind=Variable()))
+        
     
     #inherit processing
     def visitFuncDecl(self, ast: FuncDecl, param): 
@@ -221,7 +232,7 @@ class StaticChecker(Visitor):
             self.handleSuper(ast.body.body[0], inherit_list, (env, func_list))
         env[0] = inherit_list + env[0]
         for i in range(1 if ast.inherit else 0, len(ast.body.body)):
-            if type(ast.body.body[i]) is Stmt:
+            if ExpUtils.isStmt(ast.body.body[i]):
                 self.visit(ast.body.body[i], (env, func_list, ast.return_type, False)) #pass another param in visit
             else:
                 env = self.visit(ast.body.body[i], (env, func_list))
@@ -248,8 +259,9 @@ class StaticChecker(Visitor):
     def visitBlockStmt(self, ast, param): 
         scope, func_list, rettype, inloop = param
         env = [[]] + scope
+        self.checkScope(env)
         for x in ast.body:
-            if type(x) is Stmt:
+            if ExpUtils.isStmt(x):
                 self.visit(x, (env, func_list, rettype, inloop)) #pass another param in visit
             else:
                 env = self.visit(x, (env, func_list))
@@ -267,7 +279,8 @@ class StaticChecker(Visitor):
 
     def visitForStmt(self, ast, param): 
         scope, func_list, rettype, inloop = param
-        initype = self.visit(ast.init, (scope, func_list))
+        initype = self.visit(ast.init.lhs, (scope, func_list))
+        self.visit(ast.init, param)
         condtype = self.visit(ast.cond, (scope, func_list))
         uptype = self.visit(ast.upd, (scope, func_list))
         if False in [x is IntegerType for x in [type(initype), type(uptype)]] or type(condtype) is not BooleanType:
@@ -320,18 +333,17 @@ class StaticChecker(Visitor):
             if type(para) is not type(symbol.type.partype[i].type):
                 raise TypeMismatchInStatement(ast)
         # return
-        symbol = self.handleCall(ast, scope+[func_list], Function(), 'CallStmt')
-        if type(symbol.type.rettype) is VoidType:
-            raise TypeMismatchInExpression(ast)
+        # symbol = self.handleCall(ast, scope+[func_list], Function(), 'CallStmt')
+        # if type(symbol.type.rettype) is VoidType:
+        #     raise TypeMismatchInExpression(ast)
         return symbol.type.rettype
     
 
     # Expressions
     def visitBinExpr(self, ast: BinExpr, param): 
         scope, func_list = param
-        env = scope + [func_list]
-        ltype = self.visit(ast.left, env)
-        rtype = self.visit(ast.right, env)
+        ltype = self.visit(ast.left, param)
+        rtype = self.visit(ast.right, param)
         op = ast.op
         if ExpUtils.isOpForNumber(op):
             if ExpUtils.isNaN(ltype) or ExpUtils.isNaN(rtype):
@@ -340,40 +352,39 @@ class StaticChecker(Visitor):
                 if FloatType in [type(ltype), type(rtype)]:
                     raise TypeMismatchInExpression(ast)
                 if type(ltype) is AutoType:
-                    ExpUtils.infer(env, ast.left.name, IntegerType())
+                    ExpUtils.infer(scope, ast.left.name, IntegerType())
                 if type(rtype) is AutoType:
-                    ExpUtils.infer(env, ast.right.name, IntegerType())
+                    ExpUtils.infer(scope, ast.right.name, IntegerType())
                 if op == '%': 
                     return IntegerType()
                 return BooleanType()
             if type(ltype) is AutoType():
-                ltype = ExpUtils.infer(env, ast.left.name, rtype)
+                ltype = ExpUtils.infer(scope, ast.left.name, rtype)
             if type(rtype) is AutoType():
-                rtype = ExpUtils.infer(env, ast.right.name, ltype)
+                rtype = ExpUtils.infer(scope, ast.right.name, ltype)
             if op in ['+','-','*']: 
                 return ExpUtils.mergeNumType(ltype, rtype)
             if op == '/': return FloatType()
             return BooleanType()
         if op == '::':
             if type(ltype) is AutoType():
-                ltype = ExpUtils.infer(env, ast.left.name, StringType())
+                ltype = ExpUtils.infer(scope, ast.left.name, StringType())
             if type(rtype) is AutoType():
-                rtype = ExpUtils.infer(env, ast.right.name, StringType())
+                rtype = ExpUtils.infer(scope, ast.right.name, StringType())
             if False in [type(x) is StringType for x in [ltype, rtype]]:
                 raise TypeMismatchInExpression(ast)
             return StringType()
         if type(ltype) is AutoType():
-                ltype = ExpUtils.infer(env, ast.left.name, BooleanType())
+                ltype = ExpUtils.infer(scope, ast.left.name, BooleanType())
         if type(rtype) is AutoType():
-            rtype = ExpUtils.infer(env, ast.right.name, BooleanType())
+            rtype = ExpUtils.infer(scope, ast.right.name, BooleanType())
         if False in [type(x) is BooleanType for x in [ltype, rtype]]:
             raise TypeMismatchInExpression(ast)
         return BooleanType()
     
     def visitUnExpr(self, ast: UnExpr, param): 
         scope, func_list = param
-        env = scope + [func_list]
-        otype = self.visit(ast.val, env)
+        otype = self.visit(ast.val, param)
         op = ast.op
         if op == '-':
             if ExpUtils.isNaN(otype): 
@@ -382,7 +393,7 @@ class StaticChecker(Visitor):
             if not type(otype) in [BooleanType, AutoType]:
                 raise TypeMismatchInExpression(ast)
             if type(otype) is AutoType:
-                otype = ExpUtils.infer(env, ast.val.name, BooleanType())
+                otype = ExpUtils.infer(scope, ast.val.name, BooleanType())
         else:
             if type(otype) is not ArrayType:
                 raise TypeMismatchInExpression(ast)
@@ -423,7 +434,12 @@ class StaticChecker(Visitor):
             symbol = self.visit(ast.args[i], params)
             if type(symbol) is not type(param[i].type):
                 raise TypeMismatchInExpression(ast.args[i])
-
+            
+    def checkScope(self, env):
+        for symbol_list in env:
+            for symbol in symbol_list:
+                print(symbol.name)
+            
     # Visit literal => return corresponding type
     def visitIntegerLit(self, ast, param): 
         return IntegerType()

@@ -1,0 +1,10 @@
+
+        var: boolean;
+        a: array [3] of integer = [1,2,3];
+        test: function boolean(a: array[3] of integer) {
+test(a);
+return true;
+}
+    main: function void() {
+        printBoolean(var);
+    }

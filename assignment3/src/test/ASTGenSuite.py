@@ -4,12 +4,12 @@ from AST import *
 
 
 class ASTGenSuite(unittest.TestCase):
-    def test_short_vardecl(self):
+    def test0(self):
         input = """x: integer;"""
         expect = str(Program([VarDecl("x", IntegerType())]))
         self.assertTrue(TestAST.test(input, expect, 300))
 
-    def test_full_vardecl(self):
+    def test1(self):
         input = """x, y, z: integer = 1, 2, 3;"""
         expect = """Program([
 	VarDecl(x, IntegerType, IntegerLit(1))
@@ -18,7 +18,7 @@ class ASTGenSuite(unittest.TestCase):
 ])"""
         self.assertTrue(TestAST.test(input, expect, 301))
 
-    def test_vardecls(self):
+    def test2(self):
         input = """x, y, z: integer = 1, 2, 3;
         a, b: float;"""
         expect = """Program([
@@ -30,7 +30,7 @@ class ASTGenSuite(unittest.TestCase):
 ])"""
         self.assertTrue(TestAST.test(input, expect, 302))
 
-    def test_simple_program(self):
+    def test3(self):
         """Simple program"""
         input = """main: function void () {
         }"""
@@ -39,7 +39,7 @@ class ASTGenSuite(unittest.TestCase):
 ])"""
         self.assertTrue(TestAST.test(input, expect, 303))
 
-    def test_more_complex_program(self):
+    def test4(self):
         """More complex program"""
         input = """main: function void () {
             printInteger(4);
@@ -49,3 +49,12 @@ class ASTGenSuite(unittest.TestCase):
 ])"""
         self.assertTrue(TestAST.test(input, expect, 304))
 
+    def test4(self):
+        """More complex program"""
+        input = """main: function void () {
+            printInteger(4);
+        }"""
+        expect = """Program([
+	FuncDecl(main, VoidType, [], None, BlockStmt([]))
+])"""
+        self.assertTrue(TestAST.test(input, expect, 304))

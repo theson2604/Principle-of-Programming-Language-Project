@@ -1,7 +1,8 @@
 from functools import reduce
 
 def flat(param):
-    return [1]+param
+    flat = 123
+    
 
 
 

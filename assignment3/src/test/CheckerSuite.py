@@ -604,47 +604,136 @@ class CheckerSuite(unittest.TestCase):
 #         expect = """Type mismatch in Variable Declaration: VarDecl(foo, IntegerType, FuncCall(test, [Id(var)]))"""
 #         self.assertTrue(TestChecker.test(input,expect,433))
 
-    def test33(self):
+#     def test33(self):
+#         input = """
+#         var: auto = 2.0;
+#         i: integer = 2;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (i == 2) {
+#                     printInteger(i);
+#                 }
+#             }
+#             var= test(var);
+# }
+#         foo: integer = test(var);
+#         func: function float(f: boolean, a: integer) inherit test{
+#             super(var);
+#             func: boolean = false;
+#             return y;
+#         }
+
+#         func: auto = {1,2,3};
+# """
+#         expect = """Type mismatch in Variable Declaration: VarDecl(foo, IntegerType, FuncCall(test, [Id(var)]))"""
+#         self.assertTrue(TestChecker.test(input,expect,433))
+
+#     def test34(self):
+#         input = """
+#         var: auto = 2.0;
+#         i: integer = test(var);
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (i == 2) {
+#                     printInteger(i);
+#                 }
+#             }
+#             var: float = test(a);
+# }
+#         func: function auto(f: boolean, y: integer) inherit test{
+#             super(var);
+#             return y;
+#         }
+#         new_id: boolean = func(true, 123);
+# """
+#         expect = """Type mismatch in Variable Declaration: VarDecl(new_id, BooleanType, FuncCall(func, [BooleanLit(True), IntegerLit(123)]))"""
+#         self.assertTrue(TestChecker.test(input,expect,434))
+
+#     #test mismatch in expr
+#     #array subscripting
+#     def test35(self):
+#         input = """
+#         var: auto = {1,2,3,4,5};
+#         i: integer = test(2.0);
+#         test: function auto(inherit a: float) {
+#             i = var[a];
+#             for (i=1, i<10, i+1) {
+#                 while (i == 2) {
+#                     printInteger(i);
+#                 }
+#             }
+#             var: float = test(a);
+# }
+#         func: function auto(f: boolean, y: integer) inherit test{
+#             super(var);
+#             return y;
+#         }
+#         new_id: boolean = func(true, 123);
+# """
+#         expect = """Type mismatch in expression: ArrayCell(var, [Id(a)])"""
+#         self.assertTrue(TestChecker.test(input,expect,435))
+
+    
+#     def test36(self):
+#         input = """
+#         var: auto = {{32,3,4},{1,2,3},{2,3,3}};
+#         i: integer = test(2.0);
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (var[i, a] == 2) {
+#                     printInteger(i);
+#                 }
+#             }
+#             var: float = test(a);
+# }
+#         func: function auto(f: boolean, y: integer) inherit test{
+#             super(var);
+#             return y;
+#         }
+#         new_id: boolean = func(true, 123);
+# """
+#         expect = """Type mismatch in expression: ArrayCell(var, [Id(i), Id(a)])"""
+#         self.assertTrue(TestChecker.test(input,expect,436))
+
+    def test37(self):
         input = """
-        var: auto = 2.0;
-        i: integer = 2;
+        var: auto = {{32,3,4},{1,2,3},{2,3,3}};
+        i: integer = test(2.0);
         test: function auto(inherit a: float) {
             for (i=1, i<10, i+1) {
-                while (i == 2) {
+                while (var[i, test(1.3333)] == 2) {
                     printInteger(i);
                 }
             }
-            var= test(var);
-}
-        foo: integer = test(var);
-        func: function float(f: boolean, a: integer) inherit test{
-            super(var);
-            func: boolean = false;
-            return y;
-        }
-
-        func: auto = {1,2,3};
-"""
-        expect = """Type mismatch in Variable Declaration: VarDecl(foo, IntegerType, FuncCall(test, [Id(var)]))"""
-        self.assertTrue(TestChecker.test(input,expect,433))
-
-    def test34(self):
-        input = """
-        var: auto = 2.0;
-        i: integer = test(var);
-        test: function auto(inherit a: float) {
-            for (i=1, i<10, i+1) {
-                while (i == 2) {
-                    printInteger(i);
-                }
-            }
-            var: float = test(a);
+            var: integer = test(a);
 }
         func: function auto(f: boolean, y: integer) inherit test{
             super(var);
-            return y;
+            return f;
         }
         new_id: boolean = func(true, 123);
+        x: integer = var[test(3333.333), func(true, i)];
 """
-        expect = """Type mismatch in Variable Declaration: VarDecl(foo, IntegerType, FuncCall(test, [Id(var)]))"""
-        self.assertTrue(TestChecker.test(input,expect,434))
+        expect = """Type mismatch in expression: ArrayCell(var, [Id(i), FuncCall(test, [FloatLit(1.3333)])])"""
+        self.assertTrue(TestChecker.test(input,expect,437))
+
+#     #binop and unop
+#     def test38(self):
+#         input = """
+#         var: auto = {{32,3,4},{1,2,3},{2,3,3}};
+#         i: integer = test(2.0);
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (var[i, test(1.3333)] == (2 + a)) {
+#                     printInteger(i);
+#                 }
+#             }
+# }
+#         func: function auto(f: boolean, y: integer) inherit test{
+#             super(var);
+#             return f;
+#         }
+# """
+#         expect = """Type mismatch in expression: ArrayCell(var, [Id(i), FuncCall(test, [FloatLit(1.3333)])])"""
+#         self.assertTrue(TestChecker.test(input,expect,438))
+    

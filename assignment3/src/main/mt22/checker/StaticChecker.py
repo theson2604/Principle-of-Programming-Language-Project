@@ -210,7 +210,7 @@ class StaticChecker(Visitor):
                 ast.typ = self.visit(ast.init, param)
             elif type(typ) is AutoType:
                 if type(ast.init) is FuncCall:
-                    ExpUtils.infer(env+[func_list], ast.name, ast.typ)
+                    ExpUtils.infer(env+[func_list], ast.init.name, ast.typ)
             elif type(ast.typ) is not type(typ):
                 raise TypeMismatchInVarDecl(ast)
         return Checker.checkRedeclared(env, Symbol(ast.name, ast.typ, kind=Variable()))
@@ -237,7 +237,7 @@ class StaticChecker(Visitor):
         env[0] = inherit_list + env[0] 
         for i in range(1 if ast.inherit else 0, len(ast.body.body)):
             if ExpUtils.isStmt(ast.body.body[i]):
-                self.visit(ast.body.body[i], (env, func_list, ast.return_type, False)) #pass another param in visit
+                self.visit(ast.body.body[i], (env, func_list, ast.return_type, False, ast.name)) #pass another param in visit
             else:
                 env = self.visit(ast.body.body[i], (env, func_list))
         if type(ast.return_type) is AutoType:
@@ -258,7 +258,7 @@ class StaticChecker(Visitor):
 
     #Statementssw
     def visitAssignStmt(self, ast, param): 
-        scope, func_list, rettype, inloop = param
+        scope, func_list, rettype, inloop, func_name = param
         ltype = self.visit(ast.lhs, (scope, func_list))
         rtype = self.visit(ast.rhs, (scope, func_list))
         if type(ltype) in [VoidType, ArrayType] or not Checker.matchType(ltype, rtype):
@@ -272,17 +272,17 @@ class StaticChecker(Visitor):
         return
 
     def visitBlockStmt(self, ast, param): 
-        scope, func_list, rettype, inloop = param
+        scope, func_list, rettype, inloop, func_name = param
         env = [[]] + scope
         for x in ast.body:
             if ExpUtils.isStmt(x):
-                self.visit(x, (env, func_list, rettype, inloop)) #pass another param in visit
+                self.visit(x, (env, func_list, rettype, inloop, func_name)) #pass another param in visit
             else:
                 env = self.visit(x, (env, func_list))
 
     
     def visitIfStmt(self, ast, param): 
-        scope, func_list, rettype, inloop = param
+        scope, func_list, rettype, inloop, func_name = param
         condtype = self.visit(ast.cond, (scope, func_list))
         if type(condtype) is not BooleanType:
             raise TypeMismatchInStatement(ast)
@@ -292,27 +292,27 @@ class StaticChecker(Visitor):
         return
 
     def visitForStmt(self, ast, param): 
-        scope, func_list, rettype, inloop = param
+        scope, func_list, rettype, inloop, func_name = param
         initype = self.visit(ast.init.lhs, (scope, func_list))
         self.visit(ast.init, param)
         condtype = self.visit(ast.cond, (scope, func_list))
         uptype = self.visit(ast.upd, (scope, func_list))
         if False in [x is IntegerType for x in [type(initype), type(uptype)]] or type(condtype) is not BooleanType:
             raise TypeMismatchInStatement(ast)
-        self.visit(ast.stmt, (scope, func_list, rettype, True))
+        self.visit(ast.stmt, (scope, func_list, rettype, True, func_name))
         return
         
     def visitWhileStmt(self, ast, param): 
-        scope, func_list, rettype, inloop = param
+        scope, func_list, rettype, inloop, func_name = param
         condtype = self.visit(ast.cond, (scope, func_list))
         if type(condtype) is not BooleanType:
             raise TypeMismatchInStatement(ast)
-        self.visit(ast.stmt, (scope, func_list, rettype, True))
+        self.visit(ast.stmt, (scope, func_list, rettype, True, func_name))
         return 
     
     def visitDoWhileStmt(self, ast, param): 
-        scope, func_list, rettype, inloop = param
-        self.visit(ast.stmt, (scope, func_list, rettype, True))
+        scope, func_list, rettype, inloop, func_name = param
+        self.visit(ast.stmt, (scope, func_list, rettype, True, func_name))
         condtype = self.visit(ast.cond, (scope, func_list))
         if type(condtype) is not BooleanType:
             raise TypeMismatchInStatement(ast)
@@ -329,17 +329,18 @@ class StaticChecker(Visitor):
         return 
     
     def visitReturnStmt(self, ast, param): 
-        scope, func_list, rettype, inloop = param
+        scope, func_list, rettype, inloop, func_name = param
         if not ast.expr and type(rettype) is not VoidType:
             raise TypeMismatchInStatement(ast)
         ret = self.visit(ast.expr, (scope, func_list))
-        if type(rettype) is AutoType: pass
-        if type(ret) is not type(rettype):
+        if type(rettype) is AutoType: 
+            ExpUtils.infer(scope+[func_list], func_name, ret)
+        elif type(ret) is not type(rettype):
             raise TypeMismatchInStatement(ast)
         return 
     
     def visitCallStmt(self, ast, param): 
-        scope, func_list, rettype, inloop = param
+        scope, func_list, rettype, inloop, func_name = param
         symbol = Checker.checkUndeclared(scope+[func_list], ast.name, Function())
         if len(ast.args) != len(symbol.type.partype):
             raise TypeMismatchInStatement(ast)

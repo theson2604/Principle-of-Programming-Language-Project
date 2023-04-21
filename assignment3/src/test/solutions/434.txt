@@ -1,1 +1,1 @@
-Type mismatch in statement: ReturnStmt(Id(y))
+Type mismatch in Variable Declaration: VarDecl(new_id, BooleanType, FuncCall(func, [BooleanLit(True), IntegerLit(123)]))

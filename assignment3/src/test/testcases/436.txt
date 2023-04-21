@@ -1,0 +1,16 @@
+
+        var: auto = {{32,3,4},{1,2,3},{2,3,3}};
+        i: integer = test(2.0);
+        test: function auto(inherit a: float) {
+            for (i=1, i<10, i+1) {
+                while (var[i, a] == 2) {
+                    printInteger(i);
+                }
+            }
+            var: float = test(a);
+}
+        func: function auto(f: boolean, y: integer) inherit test{
+            super(var);
+            return y;
+        }
+        new_id: boolean = func(true, 123);

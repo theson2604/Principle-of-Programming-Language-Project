@@ -437,6 +437,7 @@ class StaticChecker(Visitor):
         arrtype = self.visit(Id(ast.name), param)
         exp_list = [self.visit(x, param) for x in ast.cell]
         if False in [type(x) is IntegerType for x in exp_list]:
+            print(123)
             raise TypeMismatchInExpression(ast)
         return arrtype.typ
 
@@ -491,5 +492,9 @@ class StaticChecker(Visitor):
         for i in range(len(exp_list)-1):
             if type(exp_list[i]) is not type(exp_list[i+1]):
                 raise IllegalArrayLiteral(ast)
-        return ArrayType([len(ast.explist)], type(exp_list[0]))
+        typ = exp_list[0]
+        # while not type(typ) in [IntegerType, StringType, FloatType, BooleanType]:
+        #     print(type(typ))
+        #     typ = typ.typ
+        return ArrayType([len(ast.explist)], typ)
             

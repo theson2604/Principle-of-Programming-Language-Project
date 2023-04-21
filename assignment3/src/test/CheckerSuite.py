@@ -697,11 +697,11 @@ class CheckerSuite(unittest.TestCase):
 
     def test37(self):
         input = """
-        var: auto = {{32,3,4},{1,2,3},{2,3,3}};
+        var: auto = {32,3,4,1,2,3};
         i: integer = test(2.0);
         test: function auto(inherit a: float) {
             for (i=1, i<10, i+1) {
-                while (var[i, test(1.3333)] == 2) {
+                while (var[test(1.3333)] == 2) {
                     printInteger(i);
                 }
             }
@@ -712,7 +712,7 @@ class CheckerSuite(unittest.TestCase):
             return f;
         }
         new_id: boolean = func(true, 123);
-        x: integer = var[test(3333.333), func(true, i)];
+        x: integer = var[func(true, i)];
 """
         expect = """Type mismatch in expression: ArrayCell(var, [Id(i), FuncCall(test, [FloatLit(1.3333)])])"""
         self.assertTrue(TestChecker.test(input,expect,437))

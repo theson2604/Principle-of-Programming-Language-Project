@@ -1,0 +1,17 @@
+
+        var, b: auto = false, true;
+        i: integer;
+        test: function auto(inherit a: float) {
+            for (i=1, i<10, i+1) {
+                while (b == var) {
+                    printInteger(i);
+                }
+            }
+}
+        func: function float(f: boolean, y: float) inherit test{
+            super(3.0);
+            var = test(a);
+            return a;
+            a: integer;
+            b = test(a);
+        }

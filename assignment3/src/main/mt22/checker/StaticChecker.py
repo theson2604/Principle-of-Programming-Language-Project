@@ -200,7 +200,7 @@ class StaticChecker(Visitor):
         return []
 
     def visitVarDecl(self, ast: VarDecl, param): 
-        env = param[0]
+        env, func_list = param
         if ast.init is None:    
             if type(ast.typ) is AutoType:
                 raise Invalid(Variable(), ast.name)
@@ -208,6 +208,9 @@ class StaticChecker(Visitor):
             typ = self.visit(ast.init, param)
             if type(ast.typ) is AutoType:
                 ast.typ = self.visit(ast.init, param)
+            elif type(typ) is AutoType:
+                if type(ast.init) is FuncCall:
+                    ExpUtils.infer(env+[func_list], ast.name, ast.typ)
             elif type(ast.typ) is not type(typ):
                 raise TypeMismatchInVarDecl(ast)
         return Checker.checkRedeclared(env, Symbol(ast.name, ast.typ, kind=Variable()))
@@ -216,32 +219,42 @@ class StaticChecker(Visitor):
     #inherit processing
     def visitFuncDecl(self, ast: FuncDecl, param): 
         env, func_list = param
-        params_list = []
-        for x in ast.params:
-            params_list = self.visit(x, params_list)
-        env = [params_list] + env
         inherit_list = []
         if ast.inherit:
             inherit = Checker.checkUndeclared(env+[func_list], ast.inherit, Function())
-            if len(inherit.type.partype) != 0 and (type(ast.body.body[0]) is not CallStmt or not ast.body.body[0].name in ['super', 'preventDefault']):
-                raise InvalidStatementInFunction(ast.name)
             #take inherited params from parent function
             for symbol in inherit.type.partype:
                 if symbol.inherit:
-                    inherit_list += symbol
+                    inherit_list += [symbol]
+        params_list = []
+        for x in ast.params:
+            params_list = self.visit(x, (params_list, inherit_list))
+        env = [params_list] + env
+        if ast.inherit:
+            if len(inherit.type.partype) != 0 and (type(ast.body.body[0]) is not CallStmt or not ast.body.body[0].name in ['super', 'preventDefault']):
+                raise InvalidStatementInFunction(ast.name)
             self.handleSuper(ast.body.body[0], inherit_list, (env, func_list))
-        env[0] = inherit_list + env[0]
+        env[0] = inherit_list + env[0] 
         for i in range(1 if ast.inherit else 0, len(ast.body.body)):
             if ExpUtils.isStmt(ast.body.body[i]):
                 self.visit(ast.body.body[i], (env, func_list, ast.return_type, False)) #pass another param in visit
             else:
                 env = self.visit(ast.body.body[i], (env, func_list))
+        if type(ast.return_type) is AutoType:
+            for symbol in func_list:
+                if symbol.name == ast.name:
+                    ast.return_type = symbol.type.rettype
         return Checker.checkRedeclared(param[0], Symbol(ast.name, MType(params_list, ast.return_type)))
 
     def visitParamDecl(self, ast: ParamDecl, param):
+        params_list, inherit_list = param
         symbol = Symbol(ast.name, ast.typ, inherit=True, kind=Parameter()) if ast.inherit else Symbol(ast.name, ast.typ, kind=Parameter())
-        param = Checker.checkRedeclared([param], symbol)
-        return param[0]
+        if len(inherit_list) != 0:
+            f = Checker.utils.lookup(symbol.name, inherit_list, Symbol.cmp)
+            if f is not None:
+                raise Invalid(symbol.kind, symbol.name)
+        params_list = Checker.checkRedeclared([params_list], symbol)
+        return params_list[0]
 
     #Statementssw
     def visitAssignStmt(self, ast, param): 
@@ -254,7 +267,7 @@ class StaticChecker(Visitor):
             ExpUtils.infer(scope, ast.lhs.name, rtype)
             return
         if type(rtype) is AutoType:
-            ExpUtils.infer(scope, ast.rhs.name, ltype)
+            ExpUtils.infer(scope+[func_list], ast.rhs.name, ltype)
             return
         return
 
@@ -352,6 +365,16 @@ class StaticChecker(Visitor):
         op = ast.op
         if ExpUtils.isOpForNumber(op):
             if ExpUtils.isNaN(ltype) or ExpUtils.isNaN(rtype):
+                if op in ['==', '!=']:
+                    if type(ltype) is not BooleanType and type(rtype) is not BooleanType:
+                        raise TypeMismatchInExpression(ast)
+                    if type(ltype) is BooleanType:
+                        if type(rtype) is AutoType:
+                            return ExpUtils.infer(scope, ast.right.name, BooleanType())
+                        if type(rtype) is BooleanType: 
+                            return rtype
+                    if type(ltype) is AutoType:
+                        return ExpUtils.infer(scope, ast.left.name, BooleanType())
                 raise TypeMismatchInExpression(ast)
             if ExpUtils.isOpForInt(op):
                 if FloatType in [type(ltype), type(rtype)]:
@@ -433,9 +456,9 @@ class StaticChecker(Visitor):
 
     # param is list of inherited params from parent func
     def handleSuper(self, ast, param, params):
-        if len(ast.agrs) > len(param):
-            raise TypeMismatchInExpression(ast.agrs[len(param)])
-        if len(ast.agrs) < len(param):
+        if len(ast.args) > len(param):
+            raise TypeMismatchInExpression(ast.args[len(param)])
+        if len(ast.args) < len(param):
             raise TypeMismatchInExpression()
         for i in range(len(ast.args)):
             symbol = self.visit(ast.args[i], params)

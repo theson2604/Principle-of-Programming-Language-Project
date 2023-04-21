@@ -1,0 +1,18 @@
+
+        var, b: auto = false, true;
+        i: integer;
+        test: function auto(inherit a: float) {
+            for (i=1, i<10, i+1) {
+                while (b == var) {
+                    printInteger(i);
+                }
+            }
+}
+        var: function float(f: boolean, y: float){
+            a: float;
+            var = test(a);
+            return a;
+            b = test(a);
+        }
+
+        b: auto = {1,2,3};

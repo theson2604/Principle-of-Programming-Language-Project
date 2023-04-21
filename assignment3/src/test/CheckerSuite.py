@@ -165,7 +165,7 @@ class CheckerSuite(unittest.TestCase):
 #         expect = """Redeclared Function: b"""
 #         self.assertTrue(TestChecker.test(input,expect,413))
 
-    #test auto type
+#     #test auto type
 #     def test14(self):
 #         input = """
 #         var, b: auto = false, true;
@@ -218,60 +218,433 @@ class CheckerSuite(unittest.TestCase):
 #         expect = """No entry point"""
 #         self.assertTrue(TestChecker.test(input,expect,416))
 
-    #test Undeclare
-    def test17(self):
-        input = """
-        var, b: auto = false, true;
-        a: float = 3.0;
-        arr: array [3] of integer;
-        test: function auto(inherit a: float) {
-            var = test(al);
-}
-        func: function array [3] of integer(f: boolean, y: float) {
-            var = test(a);
-            return {1,2,3};
-            b = test(a);
-        }
-"""
-        expect = """Undeclared Identifier: al"""
-        self.assertTrue(TestChecker.test(input,expect,417))
+#     #test Undeclare
+#     def test17(self):
+#         input = """
+#         var, b: auto = false, true;
+#         a: float = 3.0;
+#         arr: array [3] of integer;
+#         test: function auto(inherit a: float) {
+#             var = test(al);
+# }
+#         func: function array [3] of integer(f: boolean, y: float) {
+#             var = test(a);
+#             return {1,2,3};
+#             b = test(a);
+#         }
+# """
+#         expect = """Undeclared Identifier: al"""
+#         self.assertTrue(TestChecker.test(input,expect,417))
 
-    def test18(self):
-        input = """
-        var, b: auto = false, true;
-        a: float = 3.0;
-        arr: array [3] of integer;
-        test: function auto(inherit a: float) {
-            for (aw=1, a<10, a+1) {
-                printInteger(a);
-            }
-}
-        func: function array [3] of integer(f: boolean, y: float) {
-            var = test(a);
-            return {1,2,3};
-            b = test(a);
-        }
-"""
-        expect = """Undeclared Identifier: aw"""
-        self.assertTrue(TestChecker.test(input,expect,418))
+#     def test18(self):
+#         input = """
+#         var, b: auto = false, true;
+#         a: float = 3.0;
+#         arr: array [3] of integer;
+#         test: function auto(inherit a: float) {
+#             for (aw=1, a<10, a+1) {
+#                 printInteger(a);
+#             }
+# }
+#         func: function array [3] of integer(f: boolean, y: float) {
+#             var = test(a);
+#             return {1,2,3};
+#             b = test(a);
+#         }
+# """
+#         expect = """Undeclared Identifier: aw"""
+#         self.assertTrue(TestChecker.test(input,expect,418))
 
-    def test19(self):
+#     def test19(self):
+#         input = """
+#         var, b: auto = false, true;
+#         a: float = 3.0;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (flag == var) {
+#                     printInteger(i);
+#                 }
+#             }
+# }
+#         func: function array [3] of integer(f: boolean, y: float) {
+#             var = test(a);
+#             return {1,2,3};
+#             b = test(a);
+#         }
+# """
+#         expect = """Undeclared Identifier: flag"""
+#         self.assertTrue(TestChecker.test(input,expect,419))
+
+#     #test Redeclare
+#     def test20(self):
+#         input = """
+#         var, b: auto = false, true;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (b == var) {
+#                     printInteger(i);
+#                 }
+#             }
+# }
+#         func: function float(f: boolean, y: float) inherit test{
+#             super(3.0);
+#             var = test(a);
+#             return a;
+#             a: integer;
+#             b = test(a);
+#         }
+# """
+#         expect = """Redeclared Variable: a"""
+#         self.assertTrue(TestChecker.test(input,expect,420))
+
+#     def test21(self):
+#         input = """
+#         var, b: auto = false, true;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (b == var) {
+#                     printInteger(i);
+#                 }
+#             }
+# }
+#         func: function float(f: boolean, y: float){
+#             a: float;
+#             var = test(a);
+#             return a;
+#             b = test(a);
+#         }
+
+#         b: auto = {1,2,3};
+# """
+#         expect = """Redeclared Variable: b"""
+#         self.assertTrue(TestChecker.test(input,expect,421))
+
+#     def test22(self):
+#         input = """
+#         var, b: auto = false, true;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (b == var) {
+#                     printInteger(i);
+#                 }
+#             }
+# }
+#         var: function float(f: boolean, y: float){
+#             a: float;
+#             var = test(a);
+#             return a;
+#             b = test(a);
+#         }
+
+#         b: auto = {1,2,3};
+# """
+#         expect = """Redeclared Function: var"""
+#         self.assertTrue(TestChecker.test(input,expect,422))
+
+#     def test23(self):
+#         input = """
+#         var, b: auto = false, true;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (b == var) {
+#                     printInteger(i);
+#                 }
+#             }
+# }
+#         test1: function float(f: boolean, y: float){
+#             a: float;
+#             var = test(a);
+#             return a;
+#             b = test(a);
+#         }
+
+#         test: auto = {1,2,3};
+# """
+#         expect = """Redeclared Variable: test"""
+#         self.assertTrue(TestChecker.test(input,expect,423))
+
+#     def test24(self):
+#         input = """
+#         var, b: auto = false, true;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (b == var) {
+#                     printInteger(i);
+#                 }
+#             }
+# }
+#         test1: function float(f: boolean, y: float, f: string){
+#             a: float;
+#             var = test(a);
+#             return a;
+#             b = test(a);
+#         }
+
+#         test: auto = {1,2,3};
+# """
+#         expect = """Redeclared Parameter: f"""
+#         self.assertTrue(TestChecker.test(input,expect,424))
+
+#     def test25(self):
+#         input = """
+#         var, b: auto = false, true;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (b == var) {
+#                     printInteger(i);
+#                 }
+#             }
+# }
+#         test1: function float(f: boolean, y: float){
+#             a: float;
+#             var = test(a);
+#             return a;
+#             y: array [1,2,3] of boolean;
+#             b = test(a);
+#         }
+
+#         test: auto = {1,2,3};
+# """
+#         expect = """Redeclared Variable: y"""
+#         self.assertTrue(TestChecker.test(input,expect,425))
+
+#     def test26(self):
+#         input = """
+#         var, b: auto = false, true;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (b == var) {
+#                     printInteger(i);
+#                 }
+#             }
+# }
+#         func: function float(f: boolean, y: float) inherit test{
+#             super(3.0);
+#             var = test(a);
+#             func: boolean = false;
+#             return a;
+#         }
+
+#         func: auto = {1,2,3};
+# """
+#         expect = """Redeclared Variable: func"""
+#         self.assertTrue(TestChecker.test(input,expect,426))
+
+#     #test Invalid
+#     def test27(self):
+#         input = """
+#         var: auto;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (b == var) {
+#                     printInteger(i);
+#                 }
+#             }
+# }
+#         func: function float(f: boolean, y: float) inherit test{
+#             super(3.0);
+#             var = test(a);
+#             func: boolean = false;
+#             return a;
+#         }
+
+#         func: auto = {1,2,3};
+# """
+#         expect = """Invalid Variable: var"""
+#         self.assertTrue(TestChecker.test(input,expect,427))
+
+#     def test28(self):
+#         input = """
+#         var: auto = 2.0;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (i == 2) {
+#                     printInteger(i);
+#                 }
+#             }
+#             var= func(true, var);
+# }
+#         func: function float(f: boolean, y: float){
+#             foo: auto;
+#             func: boolean = false;
+#             return y;
+#         }
+
+#         func: auto = {1,2,3};
+# """
+#         expect = """Invalid Variable: foo"""
+#         self.assertTrue(TestChecker.test(input,expect,428))
+
+#     def test29(self):
+#         input = """
+#         var: auto = 2.0;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (i == 2) {
+#                     printInteger(i);
+#                 }
+#             }
+#             var= func(true, var);
+# }
+#         func: function float(f: boolean, y: float){
+#             foo: auto;
+#             func: boolean = false;
+#             return y;
+#         }
+
+#         func: auto = {1,2,3};
+# """
+#         expect = """Invalid Variable: foo"""
+#         self.assertTrue(TestChecker.test(input,expect,429))
+
+#     def test30(self):
+#         input = """
+#         var: auto = 2.0;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (i == 2) {
+#                     printInteger(i);
+#                 }
+#             }
+#             var= func(true, i);
+# }
+#         func: function float(f: boolean, a: integer) inherit test{
+#             super(var);
+#             func: boolean = false;
+#             return y;
+#         }
+
+#         func: auto = {1,2,3};
+# """
+#         expect = """Invalid Parameter: a"""
+#         self.assertTrue(TestChecker.test(input,expect,430))
+
+#     def test31(self):
+#         input = """
+#         var: auto = 2.0;
+#         i: integer;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (i == 2) {
+#                     printInteger(i);
+#                 }
+#             }
+#             var: auto;
+#             var= func(true, i);
+# }
+#         func: function float(f: boolean, a: integer) inherit test{
+#             super(var);
+#             func: boolean = false;
+#             return y;
+#         }
+
+#         func: auto = {1,2,3};
+# """
+#         expect = """Invalid Variable: var"""
+#         self.assertTrue(TestChecker.test(input,expect,431))
+
+#     #test mismatch in var
+#     def test32(self):
+#         input = """
+#         var: auto = 2.0;
+#         i: integer = var;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (i == 2) {
+#                     printInteger(i);
+#                 }
+#             }
+#             var: auto;
+#             var= func(true, i);
+# }
+#         func: function float(f: boolean, a: integer) inherit test{
+#             super(var);
+#             func: boolean = false;
+#             return y;
+#         }
+
+#         func: auto = {1,2,3};
+# """
+#         expect = """Type mismatch in Variable Declaration: VarDecl(i, IntegerType, Id(var))"""
+#         self.assertTrue(TestChecker.test(input,expect,432))
+
+#     def test33(self):
+#         input = """
+#         var: auto = 2.0;
+#         i: integer = 2;
+#         test: function auto(inherit a: float) {
+#             for (i=1, i<10, i+1) {
+#                 while (i == 2) {
+#                     printInteger(i);
+#                 }
+#             }
+#             var= test(var);
+# }
+#         foo: integer = test(var);
+#         func: function float(f: boolean, a: integer) inherit test{
+#             super(var);
+#             func: boolean = false;
+#             return y;
+#         }
+
+#         func: auto = {1,2,3};
+# """
+#         expect = """Type mismatch in Variable Declaration: VarDecl(foo, IntegerType, FuncCall(test, [Id(var)]))"""
+#         self.assertTrue(TestChecker.test(input,expect,433))
+
+    def test33(self):
         input = """
-        var, b: auto = false, true;
-        a: float = 3.0;
-        i: integer;
+        var: auto = 2.0;
+        i: integer = 2;
         test: function auto(inherit a: float) {
             for (i=1, i<10, i+1) {
-                while (flag == var) {
+                while (i == 2) {
                     printInteger(i);
                 }
             }
+            var= test(var);
 }
-        func: function array [3] of integer(f: boolean, y: float) {
-            var = test(a);
-            return {1,2,3};
-            b = test(a);
+        foo: integer = test(var);
+        func: function float(f: boolean, a: integer) inherit test{
+            super(var);
+            func: boolean = false;
+            return y;
         }
+
+        func: auto = {1,2,3};
 """
-        expect = """Undeclared Identifier: flag"""
-        self.assertTrue(TestChecker.test(input,expect,419))
+        expect = """Type mismatch in Variable Declaration: VarDecl(foo, IntegerType, FuncCall(test, [Id(var)]))"""
+        self.assertTrue(TestChecker.test(input,expect,433))
+
+    def test34(self):
+        input = """
+        var: auto = 2.0;
+        i: integer = test(var);
+        test: function auto(inherit a: float) {
+            for (i=1, i<10, i+1) {
+                while (i == 2) {
+                    printInteger(i);
+                }
+            }
+            var: float = test(a);
+}
+        func: function auto(f: boolean, y: integer) inherit test{
+            super(var);
+            return y;
+        }
+        new_id: boolean = func(true, 123);
+"""
+        expect = """Type mismatch in Variable Declaration: VarDecl(foo, IntegerType, FuncCall(test, [Id(var)]))"""
+        self.assertTrue(TestChecker.test(input,expect,434))

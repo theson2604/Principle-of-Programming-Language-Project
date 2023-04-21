@@ -1,0 +1,17 @@
+
+        var: auto = {32,3,4,1,2,3};
+        i: integer = test(var[3]);
+        flag: boolean = false;
+        test: function auto(inherit a: float) {
+            for (i=1, i<10, i+1) {
+                while (flag) {
+                    i = var[i] % 3;
+                    a = func(var[3], i);
+                }
+                
+            }
+        }
+        func: function void(f: boolean, y: integer) inherit test{
+            super(var);
+            return f;
+        }

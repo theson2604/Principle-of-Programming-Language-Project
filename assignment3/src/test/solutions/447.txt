@@ -1,0 +1,1 @@
+Type mismatch in statement: WhileStmt(BinExpr(+, ArrayCell(var, [IntegerLit(3)]), Id(i)), BlockStmt([AssignStmt(Id(i), BinExpr(%, ArrayCell(var, [Id(i)]), IntegerLit(3))), AssignStmt(Id(a), FuncCall(func, [ArrayCell(var, [IntegerLit(3)]), Id(i)]))]))

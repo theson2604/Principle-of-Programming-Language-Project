@@ -1,1 +1,1 @@
-Type mismatch in expression: ArrayCell(var, [Id(i), FuncCall(test, [FloatLit(1.3333)])])
+Type mismatch in expression: BinExpr(==, ArrayCell(var, [Id(i)]), BinExpr(+, IntegerLit(2), Id(a)))

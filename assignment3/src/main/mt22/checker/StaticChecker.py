@@ -211,6 +211,8 @@ class StaticChecker(Visitor):
             elif type(typ) is AutoType:
                 if type(ast.init) is FuncCall:
                     ExpUtils.infer(env+[func_list], ast.init.name, ast.typ)
+            elif type(ast.typ) is FloatType and type(typ) is IntegerType:
+                pass
             elif type(ast.typ) is not type(typ):
                 raise TypeMismatchInVarDecl(ast)
         return Checker.checkRedeclared(env, Symbol(ast.name, ast.typ, kind=Variable()))
@@ -219,6 +221,10 @@ class StaticChecker(Visitor):
     #inherit processing
     def visitFuncDecl(self, ast: FuncDecl, param): 
         env, func_list = param
+        if type(ast.return_type) is AutoType:
+            for symbol in func_list:
+                if symbol.name == ast.name:
+                    ast.return_type = symbol.type.rettype
         inherit_list = []
         if ast.inherit:
             inherit = Checker.checkUndeclared(env+[func_list], ast.inherit, Function())
@@ -437,7 +443,6 @@ class StaticChecker(Visitor):
         arrtype = self.visit(Id(ast.name), param)
         exp_list = [self.visit(x, param) for x in ast.cell]
         if False in [type(x) is IntegerType for x in exp_list]:
-            print(123)
             raise TypeMismatchInExpression(ast)
         return arrtype.typ
 

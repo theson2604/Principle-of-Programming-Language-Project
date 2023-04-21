@@ -7,10 +7,10 @@
                     printInteger(i);
                 }
             }
-            var: integer = test(a);
+            o: integer = var[a];
 }
         func: function auto(f: boolean, y: integer) inherit test{
-            super(var);
+            super(var[i]);
             return f;
         }
         new_id: boolean = func(true, 123);

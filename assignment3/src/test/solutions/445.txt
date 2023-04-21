@@ -1,0 +1,1 @@
+Type mismatch in expression: FuncCall(func, [ArrayCell(var, [IntegerLit(3)]), Id(i)])

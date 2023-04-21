@@ -1,0 +1,15 @@
+
+        var: auto = {32,3,4,1,2,3};
+        i: integer = test(3.2e-1);
+        e: float = i;
+        flag: boolean = false;
+        test: function auto(inherit a: float) {
+            for (i=1, i!=var[0], i+1) {
+                a = var[2];
+                var[6] = e; 
+            }
+        }
+        func: function void(f: boolean, y: integer) inherit test{
+            super(var);
+            return f;
+        }

@@ -333,6 +333,7 @@ class StaticChecker(Visitor):
         if not ast.expr and type(rettype) is not VoidType:
             raise TypeMismatchInStatement(ast)
         ret = self.visit(ast.expr, (scope, func_list))
+        if type(rettype) is AutoType: pass
         if type(ret) is not type(rettype):
             raise TypeMismatchInStatement(ast)
         return 

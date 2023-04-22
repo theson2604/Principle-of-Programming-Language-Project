@@ -1524,17 +1524,18 @@ return true;
         expect = """Undeclared Function: prevenDefault"""
         self.assertTrue(TestChecker.test(input,expect,476))
 
-#     def test76(self):
-#         input = """
-#         var: auto = {32,3,4,1,2,3};
-#         i: integer = foo();
-#         e: float = i;
-#         flag: boolean = false;
-#         inc : function void (out o: integer, a:float) inherit foo{
-#             super();
-#             a: float = foo(n, 2);
-#         }
-#         foo : function auto (){}
-# """
-#         expect = """Undeclared Function: prevenDefault"""
-#         self.assertTrue(TestChecker.test(input,expect,476))
+    def test77(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo();
+        e: float = var[1,2];
+        flag: boolean = false;
+        inc : function void (out o: integer, a:float) inherit foo{
+            super();
+            a: float = foo(n, 2);
+        }
+        foo : function auto (){}
+        a: auto = {{1,2,3},{1,2,5,6,3}};
+"""
+        expect = """Undeclared Function: prevenDefault"""
+        self.assertTrue(TestChecker.test(input,expect,477))

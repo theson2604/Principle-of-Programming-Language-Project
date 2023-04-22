@@ -1,1 +1,1 @@
-Type mismatch in expression: Id(e)
+Type mismatch in expression: ArrayCell(var, [IntegerLit(31)])

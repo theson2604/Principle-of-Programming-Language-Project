@@ -463,6 +463,7 @@ class StaticChecker(Visitor):
     def handleCall(self, ast, scope, kind, typ):
         env, func_list = scope
         symbol = Checker.checkUndeclared(env+[func_list], ast.name, kind)
+        # if type(symbol.type.rettype) is AutoType:
         params = [self.visit(x, (env, func_list)) for x in ast.args]
         args = [x.type for x in symbol.type.partype]
         if not Checker.checkParamType(args, params):
@@ -509,6 +510,7 @@ class StaticChecker(Visitor):
             if type(exp_list[i]) is not type(exp_list[i+1]):
                 raise IllegalArrayLiteral(ast)
         typ = exp_list[0]
+        
         # while not type(typ) in [IntegerType, StringType, FloatType, BooleanType]:
         #     print(type(typ))
         #     typ = typ.typ

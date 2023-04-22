@@ -4,7 +4,7 @@
         e: float = i;
         flag: boolean = false;
         func: function string(inherit f: boolean, y: integer) inherit test{
-            prevenDefault();
+            preventDefault();
             while(1 != 2) {
                 break;
             }

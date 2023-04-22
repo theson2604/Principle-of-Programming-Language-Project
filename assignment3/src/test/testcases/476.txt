@@ -1,0 +1,8 @@
+
+        var: auto = { {1 , 2}, { 1,1.5} };
+        foo: function auto(x:float, b:boolean) inherit bar{
+            super(1, true);
+        }
+        bar: function auto (inherit a: integer, inherit a: string) {
+        
+        }

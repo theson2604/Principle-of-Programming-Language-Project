@@ -11,6 +11,6 @@
         }
         main: auto = {1,2,3,4,5};
         foo: function auto(bar: string, boo: float) inherit func {
-            super(true);
+            super(true, var[i]);
             var: boolean = f;
         }

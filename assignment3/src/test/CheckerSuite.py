@@ -1302,7 +1302,7 @@ return true;
         e: float = i;
         flag: boolean = false;
         func: function string(inherit f: boolean, y: integer) inherit test{
-            prevenDefault();
+            preventDefault();
             while(1 != 2) {
                 break;
             }
@@ -1330,7 +1330,7 @@ return true;
         e: float = i;
         flag: boolean = false;
         func: function string(inherit f: boolean, y: integer) inherit test{
-            prevenDefault();
+            preventDefault();
             while(1 != 2) {
                 break;
             }
@@ -1343,7 +1343,7 @@ return true;
             }
         }
         foo: function auto(bar: string, boo: float) inherit func {
-            super(true);
+            super(true, i);
             var: boolean = f;
         }
 """
@@ -1366,7 +1366,7 @@ return true;
             return true;
         }
         foo: function auto(bar: string, boo: float) inherit func {
-            super(true);
+            super(true, 1);
             var: boolean = f;
         }
 """
@@ -1387,7 +1387,7 @@ return true;
         }
         main: auto = {1,2,3,4,5};
         foo: function auto(bar: string, boo: float) inherit func {
-            super(true);
+            super(true, var[i]);
             var: boolean = f;
         }
 """
@@ -1436,16 +1436,105 @@ return true;
 
     def test71(self):
         input = """
-        var: array [2,2] of integer= {{2,3,4},{2222,333,333}};
+        var: auto = {32,3,4,1,2,3};
         i: integer = foo(3.333e9, var[3]);
         e: float = i;
         flag: boolean = false;
         inc : function void (out o: integer, a:float) inherit foo{
-            preventDefault();
+            super(3.2);
+            a: float = foo(n, 2);
         }
-        foo : function auto (inherit n: auto, m: auto){
-            a: integer = n + m;
-        }
+        foo : function auto (inherit n: float, n: integer){}
 """
-        expect = """Undeclared Identifier: n"""
+        expect = """Type mismatch in expression: """
         self.assertTrue(TestChecker.test(input,expect,471))
+
+    def test72(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo(3.333e9, var[3]);
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out o: integer, a:float) inherit foo{
+            super(3.2, i, var[31]);
+            a: float = foo(n, 2);
+        }
+        foo : function auto (inherit n: float, n: integer){}
+"""
+        expect = """Type mismatch in expression: ArrayCell(var, [IntegerLit(31)])"""
+        self.assertTrue(TestChecker.test(input,expect,472))
+
+    def test72(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo(3.333e9, var[3]);
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out o: integer, a:float) inherit foo{
+            super(3.2, i, var[31]);
+            a: float = foo(n, 2);
+        }
+        foo : function auto (inherit n: float, n: integer){}
+"""
+        expect = """Type mismatch in expression: ArrayCell(var, [IntegerLit(31)])"""
+        self.assertTrue(TestChecker.test(input,expect,472))
+
+    def test73(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo(3.333e9, var[3]);
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out o: integer, a:float) inherit foo{
+            super(3.2, i, var[31]);
+            a: float = foo(n, 2);
+        }
+        foo : function auto (inherit n: float, n: integer){}
+"""
+        expect = """Type mismatch in expression: ArrayCell(var, [IntegerLit(31)])"""
+        self.assertTrue(TestChecker.test(input,expect,473))
+
+    def test74(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo(3.333e9, var[3]);
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out o: integer, a:float) inherit foo{
+            super(3.2, e);
+            a: float = foo(n, 2);
+        }
+        foo : function auto (inherit n: float, n: integer){}
+"""
+        expect = """Type mismatch in expression: Id(e)"""
+        self.assertTrue(TestChecker.test(input,expect,474))
+
+    def test75(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo();
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out o: integer, a:float) inherit foo{
+            prevenDefault();
+            a: float = foo(n, 2);
+        }
+        foo : function auto (){}
+"""
+        expect = """Undeclared Function: prevenDefault"""
+        self.assertTrue(TestChecker.test(input,expect,475))
+
+    def test76(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo();
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out o: integer, a:float) inherit foo{
+            prevenDefault();
+            a: float = foo(n, 2);
+        }
+        foo : function auto (){}
+"""
+        expect = """Undeclared Function: prevenDefault"""
+        self.assertTrue(TestChecker.test(input,expect,476))

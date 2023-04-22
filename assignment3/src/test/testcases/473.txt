@@ -4,7 +4,7 @@
         e: float = i;
         flag: boolean = false;
         inc : function void (out o: integer, a:float) inherit foo{
-            super(3.2);
+            super(3.2, i, var[31]);
             a: float = foo(n, 2);
         }
         foo : function auto (inherit n: float, n: integer){}

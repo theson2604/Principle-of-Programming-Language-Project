@@ -1,10 +1,10 @@
 
         var: auto = {32,3,4,1,2,3};
-        i: integer = foo(3.333e9, var[3]);
+        i: integer = foo();
         e: float = i;
         flag: boolean = false;
         inc : function void (out o: integer, a:float) inherit foo{
-            super(3.2);
+            prevenDefault();
             a: float = foo(n, 2);
         }
-        foo : function auto (inherit n: float, n: integer){}
+        foo : function auto (){}

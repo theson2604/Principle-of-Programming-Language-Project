@@ -48,12 +48,12 @@ class ExpUtils:
         return FloatType() if FloatType in [type(x) for x in [ltype, rtype]] else IntegerType()
 
 class Symbol:
-    def __init__(self, name, type, inherit=None, kind=Function(), isGlobal=False):
+    def __init__(self, name, type, inherit=None, kind=Function(), body=None):
         self.name = name
         self.type = type
         self.inherit = inherit
         self.kind = kind
-        self.isGlobal = isGlobal
+        self.body = body
 
     def getKind(self):
         return self.kind if type(self.type) is MType else Identifier()
@@ -86,7 +86,7 @@ class Symbol:
     @staticmethod
     def fromFuncDecl(decl):
         paramsType = [Symbol(x.name, x.typ, inherit=True, kind=Parameter()) if x.inherit else Symbol(x.name, x.typ, kind=Parameter()) for x in decl.params]
-        return Symbol(decl.name, MType(paramsType, decl.return_type), kind=Function())
+        return Symbol(decl.name, MType(paramsType, decl.return_type), kind=Function(), body=decl.body)
     
     @staticmethod
     def fromDecl(decl):
@@ -186,10 +186,6 @@ class StaticChecker(Visitor):
 
     def visitProgram(self, ast: Program, param): 
         funcdecls = [Symbol.fromDecl(x) for x in ast.decls if type(x) is FuncDecl]
-        # symbols = [Symbol.fromDecl(x) for x in ast.decl]
-        # entryPoint = Symbol('main', MType([], VoidType()), kind=Function())
-        # res = Checker.utils.lookup(entryPoint.toTuple, funcdecls, lambda x: x.toTuple())
-        # if len(funcdecls) == 0 or res is None: raise NoEntryPoint()
         entryPoint = Symbol('main', MType([], VoidType()), kind=Function())
         func_list = param + [entryPoint] + funcdecls
         env = [[]]
@@ -236,18 +232,23 @@ class StaticChecker(Visitor):
         for x in ast.params:
             params_list = self.visit(x, (params_list, inherit_list))
         env = [params_list] + env
+        start = 0
         if ast.inherit:
             if len(inherit.type.partype) != 0:
                 if len(ast.body.body) == 0 or type(ast.body.body[0]) is not CallStmt or not ast.body.body[0].name in ['super', 'preventDefault']:
                     raise InvalidStatementInFunction(ast.name)
-                inherit_list = self.handleSuper(ast.body.body[0], inherit_list, (env, func_list))
+                start = 1
+                inherit_list = self.handleSuper(ast.body.body[0], inherit.type.partype, (env, func_list))
+                # for i in len(inherit_list):
+                #     Checker.checkRedeclared([], )
             else:
                 if len(ast.body.body) == 0 or type(ast.body.body[0]) is not CallStmt or not ast.body.body[0].name in ['super', 'preventDefault']:
                     pass
                 else: 
-                    inherit_list = self.handleSuper(ast.body.body[0], inherit_list, (env, func_list))
+                    start = 1
+                    inherit_list = self.handleSuper(ast.body.body[0], inherit.type.partype, (env, func_list))
         env[0] = inherit_list + env[0] 
-        for i in range(1 if ast.inherit else 0, len(ast.body.body)):
+        for i in range(start, len(ast.body.body)):
             if ExpUtils.isStmt(ast.body.body[i]):
                 self.visit(ast.body.body[i], (env, func_list, ast.return_type, False, ast.name)) #pass another param in visit
             else:
@@ -477,7 +478,7 @@ class StaticChecker(Visitor):
         if len(ast.args) > len(param):
             raise TypeMismatchInExpression(ast.args[len(param)])
         if len(ast.args) < len(param):
-            raise TypeMismatchInExpression(ast)
+            raise TypeMismatchInExpression()
         for i in range(len(ast.args)):
             symbol = self.visit(ast.args[i], params)
             if type(symbol) is not type(param[i].type):

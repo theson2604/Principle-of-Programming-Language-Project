@@ -62,7 +62,7 @@ class Symbol:
         return (self.name, type(self.getKind()))
     
     def toString(self):
-        tmp = str(self.name)+str(self.kind)
+        tmp = str(self.name)+str(self.type.rettype)+str(self.kind) if type(self.type) is MType else str(self.name)+str(self.kind)
         return tmp
 
     def toParam(self):
@@ -237,9 +237,15 @@ class StaticChecker(Visitor):
             params_list = self.visit(x, (params_list, inherit_list))
         env = [params_list] + env
         if ast.inherit:
-            if len(inherit.type.partype) != 0 and (type(ast.body.body[0]) is not CallStmt or not ast.body.body[0].name in ['super', 'preventDefault']):
-                raise InvalidStatementInFunction(ast.name)
-            self.handleSuper(ast.body.body[0], inherit_list, (env, func_list))
+            if len(inherit.type.partype) != 0:
+                if len(ast.body.body) == 0 or type(ast.body.body[0]) is not CallStmt or not ast.body.body[0].name in ['super', 'preventDefault']:
+                    raise InvalidStatementInFunction(ast.name)
+                inherit_list = self.handleSuper(ast.body.body[0], inherit_list, (env, func_list))
+            else:
+                if len(ast.body.body) == 0 or type(ast.body.body[0]) is not CallStmt or not ast.body.body[0].name in ['super', 'preventDefault']:
+                    pass
+                else: 
+                    inherit_list = self.handleSuper(ast.body.body[0], inherit_list, (env, func_list))
         env[0] = inherit_list + env[0] 
         for i in range(1 if ast.inherit else 0, len(ast.body.body)):
             if ExpUtils.isStmt(ast.body.body[i]):
@@ -464,15 +470,19 @@ class StaticChecker(Visitor):
 
     # param is list of inherited params from parent func
     def handleSuper(self, ast, param, params):
+        if ast.name == 'preventDefault':
+            if len(ast.args) > 0:
+                raise TypeMismatchInStatement(ast)
+            return []
         if len(ast.args) > len(param):
             raise TypeMismatchInExpression(ast.args[len(param)])
         if len(ast.args) < len(param):
-            raise TypeMismatchInExpression()
+            raise TypeMismatchInExpression(ast)
         for i in range(len(ast.args)):
             symbol = self.visit(ast.args[i], params)
             if type(symbol) is not type(param[i].type):
                 raise TypeMismatchInExpression(ast.args[i])
-        return
+        return param
             
     def checkScope(self, env):
         for symbol_list in env:

@@ -1,0 +1,7 @@
+
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo(3.333e9, var[3]);
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out n: integer, a:float) inherit foo{}
+        foo : function auto (inherit n: float, n: integer){}

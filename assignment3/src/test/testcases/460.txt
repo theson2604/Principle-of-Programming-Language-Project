@@ -1,0 +1,21 @@
+
+        var: auto = {32,3,4,1,2,3};
+        i: integer = test(3.2e-1);
+        e: float = i;
+        flag: boolean = false;
+        s: string = "!!!!";
+        test: function auto(inherit a: float) {
+            func(flag, i);
+            for (i=2, i!=var[0], i+1) {
+                break;
+                return i;
+            }
+        }
+        func: function string(f: boolean, y: integer) inherit test{
+            super(e);
+            while(1 != 2) {
+                break;
+            }
+            return s;
+        }
+        arr: array [4] of float = {1.3, 20e-2, 4.2, 5};

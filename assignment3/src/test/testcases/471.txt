@@ -1,0 +1,11 @@
+
+        var: array [2,2] of integer= {{2,3,4},{2222,333,333}};
+        i: integer = foo(3.333e9, var[3]);
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out o: integer, a:float) inherit foo{
+            preventDefault();
+        }
+        foo : function auto (inherit n: auto, m: auto){
+            a: integer = n + m;
+        }

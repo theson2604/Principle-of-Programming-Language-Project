@@ -13,4 +13,6 @@
             super(var);
             return y;
         }
-        new_id: boolean = func(true, 123);
+        foo : function auto (inherit n: auto, m: auto){
+            a: string = n + m;
+        }

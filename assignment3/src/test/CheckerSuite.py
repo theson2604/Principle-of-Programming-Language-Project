@@ -644,9 +644,11 @@ return true;
             super(var);
             return y;
         }
-        new_id: boolean = func(true, 123);
+        foo : function auto (inherit n: auto, m: auto){
+            a: string = n + m;
+        }
 """
-        expect = """Type mismatch in Variable Declaration: VarDecl(new_id, BooleanType, FuncCall(func, [BooleanLit(True), IntegerLit(123)]))"""
+        expect = """Type mismatch in Variable Declaration: VarDecl(a, StringType, BinExpr(+, Id(n), Id(m)))"""
         self.assertTrue(TestChecker.test(input,expect,434))
 
     #test mismatch in expr
@@ -1141,3 +1143,309 @@ return true;
 """
         expect = """Type mismatch in statement: ReturnStmt(Id(f))"""
         self.assertTrue(TestChecker.test(input,expect,457))
+
+    #test must in loop
+    def test58(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = test(3.2e-1);
+        e: float = i;
+        flag: boolean = false;
+        test: function auto(inherit a: float) {
+            func(flag, i);
+            for (i=2, i!=var[0], i+1) {
+                break;
+                return i;
+            }
+        }
+        func: function string(f: boolean, y: integer) inherit test{
+            super(e);
+            continue;
+            return f;
+        }
+"""
+        expect = """Must in loop: ContinueStmt()"""
+        self.assertTrue(TestChecker.test(input,expect,458))
+    
+    def test59(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = test(3.2e-1);
+        e: float = i;
+        flag: boolean = false;
+        test: function auto(inherit a: float) {
+            func(flag, i);
+            for (i=2, i!=var[0], i+1) {
+                break;
+                return i;
+            }
+        }
+        func: function string(f: boolean, y: integer) inherit test{
+            super(e);
+            while(1 != 2) {
+                break;
+            }
+            break;
+            return f;
+        }
+"""
+        expect = """Must in loop: BreakStmt()"""
+        self.assertTrue(TestChecker.test(input,expect,459))
+
+    #test illegal arraylit
+    def test60(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = test(3.2e-1);
+        e: float = i;
+        flag: boolean = false;
+        s: string = "!!!!";
+        test: function auto(inherit a: float) {
+            func(flag, i);
+            for (i=2, i!=var[0], i+1) {
+                break;
+                return i;
+            }
+        }
+        func: function string(f: boolean, y: integer) inherit test{
+            super(e);
+            while(1 != 2) {
+                break;
+            }
+            return s;
+        }
+        arr: array [4] of float = {1.3, 20e-2, 4.2, 5};
+"""
+        expect = """Illegal array literal: ArrayLit([FloatLit(1.3), FloatLit(0.2), FloatLit(4.2), IntegerLit(5)])"""
+        self.assertTrue(TestChecker.test(input,expect,460))
+
+    def test61(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = test(3.2e-1);
+        e: float = i;
+        s: string = "!!!!";
+        arr: array [4] of string = {"123", "hello", "world", s};
+        flag: boolean = false;
+        test: function auto(inherit a: float) {
+            func(flag, i);
+            for (i=2, i!=var[0], i+1) {
+                break;
+                return i;
+                new_arr: array [4] of string = {"123", "hello", e, s};
+            }
+        }
+        func: function string(f: boolean, y: integer) inherit test{
+            super(e);
+            while(1 != 2) {
+                break;
+            }
+            return s;
+        }
+        arr: array [4] of float = {1.3, 20e-2, 4.2, 5};
+"""
+        expect = """Illegal array literal: ArrayLit([StringLit(123), StringLit(hello), Id(e), Id(s)])"""
+        self.assertTrue(TestChecker.test(input,expect,461))
+
+    #test invalid first stmt
+    def test62(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = test(3.2e-1);
+        e: float = i;
+        flag: boolean = false;
+        test: function auto(inherit a: float) {
+            for (i=2, i!=var[0], i+1) {
+                break;
+                return i;
+            }
+        }
+        func: function string(f: boolean, y: integer) inherit test{
+            while(1 != 2) {
+                break;
+            }
+            return s;
+        }
+"""
+        expect = """Invalid statement in function: func"""
+        self.assertTrue(TestChecker.test(input,expect,462))
+
+    def test63(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = test();
+        e: float = i;
+        flag: boolean = false;
+        func: function string(inherit f: boolean, y: integer) inherit test{
+            while(1 != 2) {
+                break;
+            }
+            return "owowowowo";
+        }
+        test: function auto() {
+            for (i=2, i!=var[0], i+1) {
+                break;
+                return i;
+            }
+        }
+        foo: function auto(bar: string, boo: float) inherit func {
+            var: integer = 2;
+        }
+"""
+        expect = """Invalid statement in function: foo"""
+        self.assertTrue(TestChecker.test(input,expect,463))
+
+    def test64(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = test();
+        e: float = i;
+        flag: boolean = false;
+        func: function string(inherit f: boolean, y: integer) inherit test{
+            prevenDefault();
+            while(1 != 2) {
+                break;
+            }
+            return "owowowowo";
+        }
+        test: function auto() {
+            for (i=2, i!=var[0], i+1) {
+                break;
+                return i;
+            }
+        }
+        foo: function auto(bar: string, boo: float) inherit func {
+            test();
+            var: integer = 2;
+        }
+"""
+        expect = """Invalid statement in function: foo"""
+        self.assertTrue(TestChecker.test(input,expect,464))
+
+    #test no entry
+    def test65(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = test();
+        e: float = i;
+        flag: boolean = false;
+        func: function string(inherit f: boolean, y: integer) inherit test{
+            prevenDefault();
+            while(1 != 2) {
+                break;
+            }
+            return "owowowowo";
+        }
+        test: function auto() {
+            for (i=2, i!=var[0], i+1) {
+                break;
+                return i;
+            }
+        }
+        foo: function auto(bar: string, boo: float) inherit func {
+            super(true);
+            var: boolean = f;
+        }
+"""
+        expect = """No entry point"""
+        self.assertTrue(TestChecker.test(input,expect,465))
+
+    def test66(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo("not", 3.333e9);
+        e: float = i;
+        flag: boolean = false;
+        func: function string(inherit f: boolean, y: integer){
+            while(1 != 2) {
+                break;
+            }
+            return "owowowowo";
+        }
+        main: function boolean() {
+            return true;
+        }
+        foo: function auto(bar: string, boo: float) inherit func {
+            super(true);
+            var: boolean = f;
+        }
+"""
+        expect = """No entry point"""
+        self.assertTrue(TestChecker.test(input,expect,466))
+
+    def test67(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo("not", 3.333e9);
+        e: float = i;
+        flag: boolean = false;
+        func: function string(inherit f: boolean, y: integer){
+            while(1 != 2) {
+                break;
+            }
+            return "owowowowo";
+        }
+        main: auto = {1,2,3,4,5};
+        foo: function auto(bar: string, boo: float) inherit func {
+            super(true);
+            var: boolean = f;
+        }
+"""
+        expect = """No entry point"""
+        self.assertTrue(TestChecker.test(input,expect,467))
+
+    #test inherit
+    def test68(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo(3.333e9, var[3]);
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out n: integer, a:float) inherit foo{}
+        foo : function auto (inherit n: float, n: integer){}
+"""
+        expect = """Invalid Parameter: n"""
+        self.assertTrue(TestChecker.test(input,expect,468))
+
+    def test69(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo(3.333e9, var[3]);
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out o: integer, a:float) inherit foo{}
+        foo : function auto (inherit n: float, n: integer){}
+"""
+        expect = """Invalid statement in function: inc"""
+        self.assertTrue(TestChecker.test(input,expect,469))
+
+    def test70(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo(3.333e9, var[3]);
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out o: integer, a:float) inherit foo{
+            preventDefault();
+            a: float = foo(n, 2);
+        }
+        foo : function auto (inherit n: float, n: integer){}
+"""
+        expect = """Undeclared Identifier: n"""
+        self.assertTrue(TestChecker.test(input,expect,470))
+
+    def test71(self):
+        input = """
+        var: array [2,2] of integer= {{2,3,4},{2222,333,333}};
+        i: integer = foo(3.333e9, var[3]);
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out o: integer, a:float) inherit foo{
+            preventDefault();
+        }
+        foo : function auto (inherit n: auto, m: auto){
+            a: integer = n + m;
+        }
+"""
+        expect = """Undeclared Identifier: n"""
+        self.assertTrue(TestChecker.test(input,expect,471))

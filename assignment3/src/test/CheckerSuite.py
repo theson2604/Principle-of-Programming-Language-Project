@@ -1573,3 +1573,63 @@ return true;
 """
         expect = """Type mismatch in expression: ArrayCell(var, [IntegerLit(3), IntegerLit(3), IntegerLit(3)])"""
         self.assertTrue(TestChecker.test(input,expect,480))
+
+    def test81(self):
+        input = """
+        var: auto = {{1,2,3},{1,2,3.45}};
+        main: function void() {
+            a: integer = var[3,3,3];
+        }
+"""
+        expect = """Illegal array literal: ArrayLit([ArrayLit([IntegerLit(1), IntegerLit(2), IntegerLit(3)]), ArrayLit([IntegerLit(1), IntegerLit(2), FloatLit(3.45)])])"""
+        self.assertTrue(TestChecker.test(input,expect,481))
+
+    def test82(self):
+        input = """
+        i: integer = 3;
+        e: boolean;
+        var: auto = {{1,2,3},{i+e,2,2}};
+        main: function void() {
+            a: integer = var[3,3,3];
+        }
+"""
+        expect = """Type mismatch in expression: BinExpr(+, Id(i), Id(e))"""
+        self.assertTrue(TestChecker.test(input,expect,482))
+
+    def test83(self):
+        input = """
+        i: integer = 3;
+        e: boolean;
+        var: auto =  { {1 , 2}, { 1,1.5} };
+        main: function void() {
+            a: integer = var[3,3,3];
+        }
+"""
+        expect = """Illegal array literal: ArrayLit([ArrayLit([IntegerLit(1), IntegerLit(2)]), ArrayLit([IntegerLit(1), FloatLit(1.5)])])"""
+        self.assertTrue(TestChecker.test(input,expect,483))
+
+    def test84(self):
+        input = """
+        i: integer;
+        e: boolean;
+        var: auto =  { {true , e}, { e,1.5>3.2} };
+        main: function void() {
+            a: integer = var[3,3];
+        }
+"""
+        expect = """Type mismatch in Variable Declaration: VarDecl(a, IntegerType, ArrayCell(var, [IntegerLit(3), IntegerLit(3)]))"""
+        self.assertTrue(TestChecker.test(input,expect,484))
+
+    def test85(self):
+        input = """
+        i: integer;
+        e: boolean;
+        var: auto =  { {true , e}, { e!=i,1.5>i} };
+        main: function void() {
+            a: integer = var[3,3];
+        }
+"""
+        expect = """Type mismatch in Variable Declaration: VarDecl(a, IntegerType, ArrayCell(var, [IntegerLit(3), IntegerLit(3)]))"""
+        self.assertTrue(TestChecker.test(input,expect,485))
+
+        

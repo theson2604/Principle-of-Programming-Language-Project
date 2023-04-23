@@ -39,10 +39,6 @@ class ExpUtils:
     def isOpForInt(op):
         return op in ['%', '!=', '==']
 
-    # @staticmethod
-    # def isOpForFloat(op):
-    #     return op in ['+', '-', '*', '/', '>', '<', '>=', '<=']
-
     @staticmethod
     def mergeNumType(ltype, rtype):
         return FloatType() if FloatType in [type(x) for x in [ltype, rtype]] else IntegerType()
@@ -110,7 +106,6 @@ class Checker:
             f = Checker.utils.lookup(symbol.name, curScope[0], Symbol.cmp)
             if f is not None:
                 raise Redeclared(symbol.kind, symbol.name)
-            # newScope.append(symbol)
         curScope[0] += [symbol]
         return curScope
     
@@ -171,7 +166,6 @@ class StaticChecker(Visitor):
         Symbol('printBoolean', MType([Symbol('',BooleanType(),kind=Parameter())], VoidType())),
         Symbol('readString', MType([], StringType())),
         Symbol('printString', MType([Symbol('',StringType(),kind=Parameter())], VoidType())),
-        # Symbol('super', MType([IntegerType()], VoidType())),
     ]
 
     def __init__(self, ast):
@@ -200,7 +194,7 @@ class StaticChecker(Visitor):
         else: 
             typ = self.visit(ast.init, param)
             if type(ast.typ) is AutoType:
-                new_env[0][0].type = self.visit(ast.init, param)
+                new_env[0][len(new_env[0])-1].type = typ
             elif type(typ) is AutoType:
                 if type(ast.init) is FuncCall:
                     ExpUtils.infer(env+[func_list], ast.init.name, ast.typ)
@@ -263,7 +257,7 @@ class StaticChecker(Visitor):
         params_list = Checker.checkRedeclared([params_list], symbol)
         return params_list[0]
 
-    #Statementssw
+    #Statements
     def visitAssignStmt(self, ast, param): 
         scope, func_list, rettype, inloop, func_name = param
         ltype = self.visit(ast.lhs, (scope, func_list))
@@ -455,7 +449,6 @@ class StaticChecker(Visitor):
     def handleCall(self, ast, scope, kind, typ):
         env, func_list = scope
         symbol = Checker.checkUndeclared(env+[func_list], ast.name, kind)
-        # if type(symbol.type.rettype) is AutoType:
         params = [self.visit(x, (env, func_list)) for x in ast.args]
         args = [x.type for x in symbol.type.partype]
         if not Checker.checkParamType(args, params):
@@ -497,7 +490,10 @@ class StaticChecker(Visitor):
         return StringType()
         
     def visitArrayLit(self, ast, param):
-        exp_list = [self.visit(x, param) for x in ast.explist]
+        try:
+            exp_list = [self.visit(x, param) for x in ast.explist]
+        except IllegalArrayLiteral:
+            raise IllegalArrayLiteral(ast)
         for i in range(len(exp_list)-1):
             if type(exp_list[i]) is not type(exp_list[i+1]):
                 raise IllegalArrayLiteral(ast)

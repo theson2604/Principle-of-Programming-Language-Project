@@ -1,0 +1,7 @@
+
+        i: integer;
+        e: boolean;
+        var: auto =  { {true , e}, { e!=i,1.5>i} };
+        main: function void() {
+            a: integer = var[3,3];
+        }

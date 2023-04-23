@@ -1431,7 +1431,7 @@ return true;
         }
         foo : function auto (inherit n: float, n: integer){}
 """
-        expect = """Undeclared Identifier: n"""
+        expect = """Redeclared Variable: a"""
         self.assertTrue(TestChecker.test(input,expect,470))
 
     def test71(self):
@@ -1524,18 +1524,52 @@ return true;
         expect = """Undeclared Function: prevenDefault"""
         self.assertTrue(TestChecker.test(input,expect,476))
 
+    #test random
     def test77(self):
+        input = """
+        main: function void() {
+            a = b; 
+        }
+"""
+        expect = """Undeclared Identifier: a"""
+        self.assertTrue(TestChecker.test(input,expect,477))
+
+    def test78(self):
         input = """
         var: auto = {32,3,4,1,2,3};
         i: integer = foo();
-        e: float = var[1,2];
+        e: float = i;
         flag: boolean = false;
-        inc : function void (out o: integer, a:float) inherit foo{
-            super();
-            a: float = foo(n, 2);
+        inc : function void (out o: auto, a:auto) inherit foo{
+            preventDefault();
+            b: string = a + o;
         }
         foo : function auto (){}
-        a: auto = {{1,2,3},{1,2,5,6,3}};
 """
-        expect = """Undeclared Function: prevenDefault"""
-        self.assertTrue(TestChecker.test(input,expect,477))
+        expect = """Type mismatch in Variable Declaration: VarDecl(b, StringType, BinExpr(+, Id(a), Id(o)))"""
+        self.assertTrue(TestChecker.test(input,expect,478))
+
+    def test79(self):
+        input = """
+        var: auto = {32,3,4,1,2,3};
+        i: integer = foo();
+        e: float = i;
+        flag: boolean = false;
+        inc : function void (out o: auto, a:auto) inherit foo{
+            preventDefault();
+            b: string = i != flag;
+        }
+        foo : function auto (){}
+"""
+        expect = """Type mismatch in Variable Declaration: VarDecl(b, StringType, BinExpr(!=, Id(i), Id(flag)))"""
+        self.assertTrue(TestChecker.test(input,expect,479))
+
+    def test80(self):
+        input = """
+        var: auto = {{{{1,2,3}}}};
+        main: function void() {
+            a: integer = var[3,3,3];
+        }
+"""
+        expect = """Type mismatch in expression: ArrayCell(var, [IntegerLit(3), IntegerLit(3), IntegerLit(3)])"""
+        self.assertTrue(TestChecker.test(input,expect,480))

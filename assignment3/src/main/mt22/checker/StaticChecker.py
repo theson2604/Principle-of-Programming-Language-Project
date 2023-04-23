@@ -118,15 +118,11 @@ class Checker:
     def checkUndeclared(visibleScope, name, kind):
         scope = list(reduce(lambda x,y: x+y if type(y) is list else x, visibleScope,[]))
         if scope == []: scope = visibleScope
-        res = Checker.utils.lookup((name, type(kind)), scope, lambda x: x.toTuple())
+        res = Checker.utils.lookup((name, type(kind)), scope, lambda x: x.toTuple() if type(x) is Symbol else x)
         if res is None:
             raise Undeclared(kind, name)
         return res
     
-    # @staticmethod
-    # def matchArrayType(a, b):
-    #     return a.low
-
     @staticmethod
     def matchType(patternType, paramType):
         if ArrayType in [type(x) for x in [patternType, paramType]]:
@@ -197,13 +193,14 @@ class StaticChecker(Visitor):
 
     def visitVarDecl(self, ast: VarDecl, param): 
         env, func_list = param
+        new_env = Checker.checkRedeclared(env, Symbol(ast.name, ast.typ, kind=Variable()))
         if ast.init is None:    
             if type(ast.typ) is AutoType:
                 raise Invalid(Variable(), ast.name)
         else: 
             typ = self.visit(ast.init, param)
             if type(ast.typ) is AutoType:
-                ast.typ = self.visit(ast.init, param)
+                new_env[0][0].type = self.visit(ast.init, param)
             elif type(typ) is AutoType:
                 if type(ast.init) is FuncCall:
                     ExpUtils.infer(env+[func_list], ast.init.name, ast.typ)
@@ -211,10 +208,9 @@ class StaticChecker(Visitor):
                 pass
             elif type(ast.typ) is not type(typ):
                 raise TypeMismatchInVarDecl(ast)
-        return Checker.checkRedeclared(env, Symbol(ast.name, ast.typ, kind=Variable()))
+        return new_env
         
     
-    #inherit processing
     def visitFuncDecl(self, ast: FuncDecl, param): 
         env, func_list = param
         if type(ast.return_type) is AutoType:
@@ -239,8 +235,6 @@ class StaticChecker(Visitor):
                     raise InvalidStatementInFunction(ast.name)
                 start = 1
                 inherit_list = self.handleSuper(ast.body.body[0], inherit.type.partype, (env, func_list))
-                # for i in len(inherit_list):
-                #     Checker.checkRedeclared([], )
             else:
                 if len(ast.body.body) == 0 or type(ast.body.body[0]) is not CallStmt or not ast.body.body[0].name in ['super', 'preventDefault']:
                     pass
@@ -365,10 +359,6 @@ class StaticChecker(Visitor):
                 ExpUtils.infer([symbol.type.partype], symbol.type.partype[i].name, para)
             if type(para) is AutoType:
                 ExpUtils.infer(scope+[func_list], ast.args[i].name, symbol.type.partype[i].type)
-        # return
-        # symbol = self.handleCall(ast, scope+[func_list], Function(), 'CallStmt')
-        # if type(symbol.type.rettype) is VoidType:
-        #     raise TypeMismatchInExpression(ast)
         return symbol.type.rettype
     
 
@@ -386,10 +376,12 @@ class StaticChecker(Visitor):
                     if type(ltype) is BooleanType:
                         if type(rtype) is AutoType:
                             return ExpUtils.infer(scope, ast.right.name, BooleanType())
-                        if type(rtype) is BooleanType: 
-                            return rtype
+                        if type(rtype) in [BooleanType, IntegerType]: 
+                            return BooleanType()
                     if type(ltype) is AutoType:
                         return ExpUtils.infer(scope, ast.left.name, BooleanType())
+                    if type(ltype) is IntegerType:
+                        return BooleanType()
                 raise TypeMismatchInExpression(ast)
             if ExpUtils.isOpForInt(op):
                 if FloatType in [type(ltype), type(rtype)]:
@@ -449,7 +441,7 @@ class StaticChecker(Visitor):
     def visitArrayCell(self, ast: ArrayCell, param): 
         arrtype = self.visit(Id(ast.name), param)
         exp_list = [self.visit(x, param) for x in ast.cell]
-        if False in [type(x) is IntegerType for x in exp_list]:
+        if False in [type(x) is IntegerType for x in exp_list] or len(arrtype.dimensions) != len(exp_list):
             raise TypeMismatchInExpression(ast)
         return arrtype.typ
 
@@ -470,7 +462,7 @@ class StaticChecker(Visitor):
             raise TypeMismatchInExpression(ast) if typ == 'FuncCall' else TypeMismatchInStatement(ast)
         return symbol
 
-    # param is list of inherited params from parent func
+    # param is list of params from parent func
     def handleSuper(self, ast, param, params):
         if ast.name == 'preventDefault':
             if len(ast.args) > 0:
@@ -510,9 +502,8 @@ class StaticChecker(Visitor):
             if type(exp_list[i]) is not type(exp_list[i+1]):
                 raise IllegalArrayLiteral(ast)
         typ = exp_list[0]
-        
-        # while not type(typ) in [IntegerType, StringType, FloatType, BooleanType]:
-        #     print(type(typ))
-        #     typ = typ.typ
-        return ArrayType([len(ast.explist)], typ)
+        dimen = [0] if type(typ) in [IntegerType, StringType, FloatType, BooleanType] else exp_list[0].dimensions + [0]
+        while not type(typ) in [IntegerType, StringType, FloatType, BooleanType]:
+            typ = typ.typ
+        return ArrayType(dimen, typ)
             

@@ -1,0 +1,5 @@
+
+        var: auto = {{{{1,2,3}}}};
+        main: function void() {
+            a: integer = var[3,3,3];
+        }

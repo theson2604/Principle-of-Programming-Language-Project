@@ -1,0 +1,6 @@
+bar: function void () {
+    a: array[2] of integer = {3,2};
+    a[foo()] = 4;
+}
+
+foo: function auto () {return;}

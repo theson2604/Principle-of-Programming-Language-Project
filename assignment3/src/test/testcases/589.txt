@@ -1,0 +1,24 @@
+main: function void () {
+    b: boolean ;
+    c:auto = foo();
+    b = c[0,1] > 3;
+    a:auto = readInteger();
+    {
+        c:integer = a%2;
+    }
+    writeFloat(a);
+}
+
+barr: function auto() {
+    return 2;
+}
+
+foo: function array[2,1] of integer () inherit bar {
+    super({{{1,3},{3,1}}, {{barr(),4},{1,3}}}, {3,2,barr()});
+    c: auto = {{{5,3},{3,1}}, {{4},{1,3}}};
+    b[2] = 3 - 3;
+}
+bar: function auto(inherit a : auto, inherit b: auto) {
+    a[2,1,2] = a[2,1,1] + b[1,2];
+}
+a: function auto () inherit bar1 {}

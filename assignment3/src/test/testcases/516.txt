@@ -1,0 +1,11 @@
+main : function void() inherit foo{
+    super(1.0, 2.0, 3.0);
+    z: boolean = true;
+    x:string = "abc";
+    y = 3.2;
+}
+foo : function auto(inherit x : auto, inherit y : auto, z : auto){
+    //x = true;
+    z = 2;
+    return x + y + z;
+}

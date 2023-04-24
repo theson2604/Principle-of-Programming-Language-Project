@@ -1,0 +1,27 @@
+a :auto = 2;
+
+foo: function auto (inherit a: auto, b: auto) inherit main {
+    x:integer = a + b;
+    a = "abc";
+    return 2;
+}
+
+
+bar: function string (a: integer, d: auto) inherit test {
+    foo("ab", 2.4);
+    arr1 : auto = {{3,2},{2,1}};
+    return "done";
+}
+
+test: function integer () inherit bar {
+    super(3,2);
+    d: auto = 3;
+    return a;
+}
+main: function auto (){
+    writeFloat(2);
+    foo("a",2);
+    bar(d, c);
+}
+
+b: array [2,1] of integer = {{2},{3}, {2}};

@@ -1,0 +1,4 @@
+array1 : array [2,3,2] of integer = {{{3,2},{2,4},{1,5}}, {{4,3},{2,1},{5,4}}};
+array2 : array [3,2] of integer = array1[2];
+a: float = array2[2,1];
+array3 : array [3,2] of integer = array2;

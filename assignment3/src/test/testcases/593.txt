@@ -1,0 +1,19 @@
+var: auto = {32,3,4,1,2,3};
+i: integer = test2();
+e: float = i;
+flag2: boolean = true;
+func: function string(inherit f: boolean, y: integer) inherit test2{
+    while(i != 2) {
+        break;
+    }
+    return "done";
+}
+test2: function auto() {
+    for (i=2, i!=var[0], i+1) {
+        break;
+        return i;
+    }
+}
+foo: function auto(bar: string, boo: float) inherit func {
+    var: integer = 2;
+}

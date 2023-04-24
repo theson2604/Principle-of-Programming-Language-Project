@@ -1,0 +1,10 @@
+a: integer;
+b: auto = a;
+
+main: function void () {
+    a : float;
+
+    b : auto = 2.1;
+    a = b;
+    {a = foo(2,3);}
+}

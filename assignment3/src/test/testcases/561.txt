@@ -1,0 +1,12 @@
+main: function void () {
+    b: boolean ;
+    b = foo() > bar();
+}
+
+foo: function auto () {
+    return 3;
+}
+bar: function auto() {
+    a:auto = {{2},{3}};
+}
+a: function auto () inherit bar1 {}

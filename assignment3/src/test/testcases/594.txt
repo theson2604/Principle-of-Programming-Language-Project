@@ -1,0 +1,15 @@
+avar: auto = {32,3,4,1,2,3};
+i: integer = test(3.2e-1);
+test: function auto(inherit a: float) {
+    for (i=9, i<10, i+1) {
+        while (avar[3] + i) {
+            i = avar[i] % 3;
+            a = func(avar[3], i);
+        }
+        
+    }
+}
+func: function void(f: boolean, y: integer) inherit test{
+    super(avar);
+    return f;
+}

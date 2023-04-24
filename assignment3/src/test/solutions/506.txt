@@ -1,0 +1,1 @@
+Type mismatch in Variable Declaration: VarDecl(array2, ArrayType([3, 2], IntegerType), ArrayCell(array1, [IntegerLit(2), IntegerLit(1), IntegerLit(3)]))

@@ -1,0 +1,3 @@
+M: function void (a: integer) inherit N {} 
+
+N: function void (inherit a: integer) {}

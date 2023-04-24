@@ -1,0 +1,6 @@
+bar: function void () {
+    a: array[2] of integer = {{3,2,1},{2,1,1}, {1,"abc",4}};
+    a[foo()] = 4;
+}
+
+foo: function auto () {}

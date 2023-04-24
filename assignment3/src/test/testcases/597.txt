@@ -1,0 +1,10 @@
+test: function auto (e: auto) {}
+func: function string(f: boolean, y: integer) inherit test{
+    super(3);
+    s:auto = "hello world!";
+    while(1 != 2) {
+        break;
+    }
+    return s;
+}
+arr: array [4] of float = {1.3, 20e-2, 4.2, 5};

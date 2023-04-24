@@ -1,0 +1,6 @@
+a :auto = 2;
+main: function auto (){
+    x:auto = x + x;
+}
+
+a: array [2,1] of integer = {{2},{3}};

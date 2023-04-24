@@ -1,0 +1,10 @@
+bar: function void () {
+    a: array[2] of integer = {3,2};
+    a[foo()] = 4;
+}
+a:auto = 3;
+test: function void() {
+   a:string = a;
+}
+
+foo: function auto () {}

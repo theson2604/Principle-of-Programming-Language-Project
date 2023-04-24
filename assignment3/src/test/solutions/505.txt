@@ -1,0 +1,1 @@
+Illegal array literal: ArrayLit([ArrayLit([ArrayLit([IntegerLit(3), IntegerLit(2)]), ArrayLit([IntegerLit(2), IntegerLit(4)]), ArrayLit([IntegerLit(1), IntegerLit(5)])]), ArrayLit([ArrayLit([IntegerLit(4), IntegerLit(3)]), ArrayLit([IntegerLit(2), IntegerLit(1)]), ArrayLit([IntegerLit(5), IntegerLit(4), StringLit(hello)])])])

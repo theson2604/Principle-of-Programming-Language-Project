@@ -1,0 +1,17 @@
+main: function void () {
+    b: boolean ;
+    a:auto = readInteger();
+    {
+        c:integer = a%2;
+    }
+    writeFloat(a);
+}
+bar: function integer () {}
+foo: function void (i: auto, j: auto) {
+   
+    for (i = 1, i < 100, i+2) {
+        a: array[2] of integer = {3,bar};
+        for (j = 1, j < bar(), j+1)
+           printInteger(a[j]);
+    }
+}

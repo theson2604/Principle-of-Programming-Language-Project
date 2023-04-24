@@ -1,0 +1,2 @@
+auto in exp_list of arrcell
+dimen of arraylit in arraylit must be the same

@@ -1,0 +1,6 @@
+a :auto = {3,2,1};
+main: function auto (){
+    a = 3*"abc";
+}
+
+a: array [2,1] of integer = {{2},{3}};

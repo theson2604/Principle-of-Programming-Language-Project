@@ -41,3 +41,86 @@ class Visitor(ABC):
     def visitFuncDecl(self, ast, param): pass
 
     def visitProgram(self, ast, param): pass
+
+class BaseVisitor(Visitor):
+    
+    def visitProgram(self, ast, param):
+        return None
+    
+    def visitVarDecl(self, ast, param):
+        return None
+    
+    def visitFuncDecl(self, ast, param):
+        return None
+    
+    def visitIntType(self, ast, param):
+        return None
+    
+    def visitFloatType(self, ast, param):
+        return None
+    
+    def visitBoolType(self, ast, param):
+        return None
+    
+    def visitStringType(self, ast, param):
+        return None
+    
+    def visitVoidType(self, ast, param):
+        return None
+    
+    def visitArrayType(self, ast, param):
+        return None
+    
+    def visitBinaryOp(self, ast, param):
+        return None
+    
+    def visitUnaryOp(self, ast, param):
+        return None
+    
+    def visitCallExpr(self, ast, param):
+        return None
+    
+    def visitId(self, ast, param):
+        return None
+    
+    def visitArrayCell(self, ast, param):
+        return None
+    
+    def visitAssign(self, ast, param):
+        return None
+    
+    def visitWith(self, ast, param):
+        return None
+    
+    def visitIf(self, ast, param):
+        return None
+    
+    def visitFor(self, ast, param):
+        return None
+    
+    def visitContinue(self, ast, param):
+        return None
+    
+    def visitBreak(self, ast, param):
+        return None
+    
+    def visitReturn(self, ast, param):
+        return None
+    
+    def visitWhile(self, ast, param):
+        return None
+    
+    def visitCallStmt(self, ast, param):
+        return None
+    
+    def visitIntLiteral(self, ast, param):
+        return None
+    
+    def visitFloatLiteral(self, ast, param):
+        return None
+    
+    def visitBooleanLiteral(self, ast, param):
+        return None
+    
+    def visitStringLiteral(self, ast, param):
+        return None

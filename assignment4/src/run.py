@@ -6,7 +6,7 @@ from antlr4 import *
 
 for path in ['./test/', './main/mt22/parser/', './main/mt22/utils/', './main/mt22/astgen/', './main/mt22/checker/', './main/mt22/codegen/']:
     sys.path.append(path)
-ANTLR_JAR = os.environ.get('ANTLR_JAR')
+ANTLR_JAR = "/home/ledong0110/university/222/assignment1-initial/antlr/antlr-4.9.2-complete.jar"
 TARGET_DIR = '../target'
 GENERATE_DIR = 'main/mt22/parser'
 
@@ -45,6 +45,14 @@ def main(argv):
             getAndTest(CheckCodeGenSuite)
         else:
             printUsage()
+    
+    elif argv[0] == 'GenMT22ToChecker':
+        if len(argv) > 1:
+            from compileCode import compileCode
+            compileCode(argv[1])
+        else:
+            print("Please input your source MT22 code directory")
+    
     else:
         printUsage()
 

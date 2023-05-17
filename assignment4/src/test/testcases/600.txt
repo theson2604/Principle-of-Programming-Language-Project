@@ -1,0 +1,5 @@
+a:auto = 3;
+
+main: function void() {
+    
+}

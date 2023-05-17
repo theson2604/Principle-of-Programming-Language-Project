@@ -4,7 +4,46 @@ from functools import reduce
 from Frame import Frame
 from abc import ABC
 from Visitor import *
+from Utils import *
 from AST import *
+
+DEFAULT_FUNCTIONS = [
+    {
+        "name": "readInteger",
+        "param_type": [],
+        "return_type": IntegerType(),
+    },
+    {
+        "name": "printInteger",
+        "param_type": [IntegerType()],
+        "return_type": VoidType(),
+    },
+    {
+        "name": "readFloat",
+        "param_type": [],
+        "return_type": FloatType(),
+    },
+    {
+        "name": "writeFloat",
+        "param_type": [FloatType()],
+        "return_type": VoidType(),
+    },
+    {
+        "name": "printBoolean",
+        "param_type": [BooleanType()],
+        "return_type": VoidType(),
+    },
+    {
+        "name": "readString",
+        "param_type": [],
+        "return_type": StringType(),
+    },
+    {
+        "name": "printString",
+        "param_type": [StringType()],
+        "return_type": VoidType(),
+    },
+]
 
 
 class MType:
@@ -28,10 +67,8 @@ class CodeGenerator:
         self.libName = "io"
 
     def init(self):
-        return [Symbol("readInteger", MType(list(), IntegerType()), CName(self.libName)),
-                Symbol("printInteger", MType([IntegerType()],
-                       VoidType()), CName(self.libName))
-                ]
+        return list(map(lambda x: Symbol(x.name, MType(x["param_type"], x["return_type"]), CName(self.libName)), DEFAULT_FUNCTIONS))
+        
 
     def gen(self, ast, path):
         # ast: AST
@@ -70,7 +107,7 @@ class CName(Val):
         self.value = value
 
 
-class CodeGenVisitor(BaseVisitor):
+class CodeGenVisitor(BaseVisitor, Utils):
     def __init__(self, astTree, env, path):
         self.astTree = astTree
         self.env = env
